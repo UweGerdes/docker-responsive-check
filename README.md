@@ -6,7 +6,7 @@ The example configs tests use my frontend-development sample application where a
 
 ## Run gulp docker image
 
-Run a container from the image `uwegerdes/gulp-frontend` and connect to your environment (with the localhost ports of gulp livereload on 5381, responsive-check on 5382 and a running nginx docker container, the hostname `dockerhost` is used in test configs).
+Run a container from the image `uwegerdes/responsive-check` and connect to your environment (with the localhost ports of responsive-check on 5381, gulp livereload on 5382 and a running webserver docker container, the hostname `webserver` is used in test configs).
 
 ```bash
 $ docker build -t uwegerdes/responsive-check .
@@ -35,7 +35,9 @@ $ docker run -it \
 	uwegerdes/responsive-check bash
 ```
 
-Run `npm test`.
+Run `gulp`and open `http://localhost:5481/` in your favourite browser and open the app page, execute `default` and see the results.
+
+Stop the container with CTRL-C and exit the container with CTRL-D.
 
 ## Develop
 

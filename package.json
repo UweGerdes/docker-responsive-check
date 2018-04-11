@@ -55,7 +55,6 @@
     "url": "https://github.com/uwegerdes/docker-responsive-check"
   },
   "scripts": {
-    "start": "gulp",
-    "test": "gulp selftest"
+    "start": "gulp"
   }
 }
