@@ -279,6 +279,19 @@ gulp.task('responsive-check-init', function(callback) {
 });
 
 /*
+ * selftest task: run all build tasks, start server, execute default test and shut down
+ *
+ * TODO implement test task
+ */
+gulp.task('default', function(callback) {
+	runSequence('build',
+//		'server-responsive-check:start',
+		'test',
+//		'server-responsive-check:stop',
+		callback);
+});
+
+/*
  * default task: run all build tasks and watch
  */
 gulp.task('default', function(callback) {
