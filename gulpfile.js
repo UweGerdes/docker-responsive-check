@@ -41,7 +41,7 @@ var logMode = 0;
 var txtLog = [];
 var htmlLog = [];
 var watchFilesFor = {};
-var lifereloadPort = process.env.GULP_LIVERELOAD || 5081;
+var gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081;
 var exitCode = 0;
 
 /*
@@ -191,7 +191,7 @@ gulp.task('logTestResults', function(callback) {
 gulp.task('server-responsive-check:start', function() {
 	server.listen({
 			path: path.join(testDir, 'server.js'),
-			env: { LIVERELOAD_PORT: lifereloadPort, VERBOSE: false },
+			env: { VERBOSE: false },
 			cwd: testDir
 		}
 	);
@@ -263,8 +263,8 @@ gulp.task('watch', function() {
 		});
 		gulp.watch( watchFilesFor[task], [ task ] );
 	});
-	gulpLivereload.listen( { port: lifereloadPort, delay: 2000 } );
-	console.log('gulp livereload listening on http://' + ipv4adresses()[0] + ':' + lifereloadPort);
+	gulpLivereload.listen( { port: gulpLivereloadPort, delay: 2000 } );
+	console.log('gulp livereload listening on http://' + ipv4adresses()[0] + ':' + gulpLivereloadPort);
 });
 
 /*

@@ -21,8 +21,8 @@ var bodyParser = require('body-parser'),
 var interfaces = os.networkInterfaces(),
 	app = express();
 
-var httpPort = process.env.RESPONSIVE_CHECK_HTTP,
-	livereloadPort = process.env.LIVERELOAD_PORT,
+var httpPort = process.env.RESPONSIVE_CHECK_HTTP || 8080,
+	gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081,
 	verbose = (process.env.VERBOSE == 'true'),
 	baseDir = '/results';
 
@@ -60,7 +60,7 @@ app.get('/results/:config', function(req, res){
 				configName: req.params.config,
 				config: config,
 				httpPort: httpPort,
-				livereloadPort: livereloadPort,
+				gulpLivereloadPort: gulpLivereloadPort,
 				baseDir: baseDir
 			});
 		} else {

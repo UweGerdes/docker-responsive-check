@@ -14,7 +14,7 @@ $ docker run -it \
 	--name responsive-check-webserver \
 	-v $(pwd)/config:/home/node/app/config \
 	-p 5381:8080 \
-	-p 5382:35729 \
+	-p 5382:8081 \
 	--network="$(docker inspect --format='{{.HostConfig.NetworkMode}}' webserver)" \
 	--add-host webserver:$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' webserver) \
 	uwegerdes/responsive-check
@@ -31,7 +31,7 @@ $ docker run -it \
 	--name responsive-check \
 	-v $(pwd):/home/node/app \
 	-p 5481:8080 \
-	-p 5482:35729 \
+	-p 5482:8081 \
 	uwegerdes/responsive-check bash
 ```
 
