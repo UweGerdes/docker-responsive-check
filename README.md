@@ -46,3 +46,11 @@ $ docker start -it responsive-check
 ```
 
 Run `gulp`.
+
+## Inspect
+
+To connect to a running container use:
+
+```bash
+$ docker exec -it responsive-check bash
+```

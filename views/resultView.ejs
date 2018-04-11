@@ -1,25 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-<meta charset="utf-8" />
-<title>Responsive Check <%= config.url %> <%= config.selector %></title>
-<link href="/css/app.css" rel="stylesheet" />
-<script language="JavaScript">
-function run(link) {
-	var running = window.open(link, 'runWindow', 'width=1000,height=600');
-	if (running != null) {
-		if (running.opener == null) {
-			running.opener = self;
+	<meta charset="utf-8" />
+	<title>Responsive Check <%= config.url %> <%= config.selector %></title>
+	<meta name="author" content="Uwe Gerdes, entwicklung@uwegerdes.de">
+	<meta name="copyright" content="Uwe Gerdes, ELWoMS Systems GmbH">
+	<link href="/css/app.css" rel="stylesheet" />
+	<script language="JavaScript">
+	function run(link) {
+		var running = window.open(link, 'runWindow', 'width=1000,height=600');
+		if (running != null) {
+			if (running.opener == null) {
+				running.opener = self;
+			}
+			running.focus();
+			return;
 		}
-		running.focus();
-		return;
+		else {
+			alert("window could not be opened, please allow opening of windows with javascript for this server!");
+			return;
+		}
 	}
-	else {
-		alert("window could not be opened, please allow opening of windows with javascript for this server!");
-		return;
-	}
-}
-</script>
+	</script>
 </head>
 <body>
 	<div class="resultView">

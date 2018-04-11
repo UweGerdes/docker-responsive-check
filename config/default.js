@@ -5,7 +5,7 @@
 var slimerjs = 'slimerjs';
 var phantomjs = 'phantomjs';
 
-var server = 'webserver';
+var server = 'localhost:8080';
 var baseUrl = 'http://' + server + '/index.html';
 var selector = 'body';
 var destDir = 'default';
