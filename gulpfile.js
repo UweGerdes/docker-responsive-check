@@ -35,7 +35,6 @@ var autoprefixer = require('gulp-autoprefixer'),
 	;
 
 var testDir = __dirname;
-var bowerDir = path.join(__dirname, '..', '..', 'bower_components');
 var testLogfile = path.join(testDir, 'tests.log');
 var testHtmlLogfile = path.join(testDir, 'tests.html');
 var logMode = 0;
@@ -55,26 +54,26 @@ var log = notify.withReporter(function (options, callback) {
 /*
  * less files lint and style check
  */
-watchFilesFor['responsive-check-less-lint'] = [
+watchFilesFor['less-lint'] = [
 	path.join(testDir, 'less', '**', '*.less')
 ];
-gulp.task('responsive-check-less-lint', function () {
-	return gulp.src( watchFilesFor['responsive-check-less-lint'] )
+gulp.task('less-lint', function () {
+	return gulp.src( watchFilesFor['less-lint'] )
 		.pipe(lesshint())  // enforce style guide
 		.on('error', function (err) {})
 		.pipe(lesshint.reporter())
 		;
 });
 
-watchFilesFor['responsive-check-less'] = [
+watchFilesFor.less = [
 	path.join(testDir, 'less', '**', '*.less'),
 	path.join(testDir, 'less', 'app.less')
 ];
-gulp.task('responsive-check-less', function () {
+gulp.task('less', function () {
 	var dest = function(filename) {
 		return path.join(path.dirname(path.dirname(filename)), 'css');
 	};
-	var src = watchFilesFor['responsive-check-less'].filter(function(el){return el.indexOf('/**/') == -1; });
+	var src = watchFilesFor.less.filter(function(el){return el.indexOf('/**/') == -1; });
 	return gulp.src( src )
 		.pipe(lessChanged({
 			getOutputFileName: function(file) {
@@ -86,30 +85,30 @@ gulp.task('responsive-check-less', function () {
 		.pipe(autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9', 'ios 6', 'android 4'))
 		.pipe(gutil.env.type === 'production' ? uglify() : gutil.noop())
 		.pipe(gulp.dest(function(file) { return dest(file.path); }))
-		.pipe(log({ message: 'written: <%= file.path %>', title: 'Gulp responsive-check-less' }))
+		.pipe(log({ message: 'written: <%= file.path %>', title: 'Gulp less' }))
 		;
 });
 
 /*
  * lint javascript files
  */
-watchFilesFor['responsive-check-lint'] = [
+watchFilesFor.lint = [
 	path.join(testDir, 'package.json'),
 	path.join(testDir, '**', '*.js')
 ];
-gulp.task('responsive-check-lint', function(callback) {
-	return gulp.src(watchFilesFor['responsive-check-lint'])
+gulp.task('lint', function(callback) {
+	return gulp.src(watchFilesFor.lint)
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'))
 		;
 });
 
-watchFilesFor['responsive-check-default'] = [
+watchFilesFor['default'] = [
 	path.join(testDir, 'config', 'default.js'),
 	path.join(testDir, 'index.js'),
 	path.join(testDir, 'bin', 'load-page.js')
 ];
-gulp.task('responsive-check-default', function(callback) {
+gulp.task('default', function(callback) {
 	del( [
 			path.join(testDir, 'results', 'default', '*.png'),
 			path.join(testDir, 'results', 'default', '*.css.json')
@@ -216,7 +215,7 @@ gulp.task('server-responsive-check', function() {
 /*
  * gulp postmortem task to stop server on termination of gulp
  */
-gulp.task('server-responsive-check-postMortem', function() {
+gulp.task('server-postMortem', function() {
 	return gulp.src( watchFilesFor['server-responsive-check'] )
 		.pipe(postMortem({gulp: gulp, tasks: [ 'server-responsive-check:stop' ]}))
 		;
@@ -241,9 +240,9 @@ gulp.task('livereload', function() {
  * run all build tasks
  */
 gulp.task('build', function(callback) {
-	runSequence('responsive-check-less-lint',
-		'responsive-check-less',
-		'responsive-check-lint',
+	runSequence('less-lint',
+		'less',
+		'lint',
 		callback);
 });
 
@@ -271,10 +270,10 @@ gulp.task('watch', function() {
 /*
  * init task: start server
  */
-gulp.task('responsive-check-init', function(callback) {
-	runSequence('responsive-check-less',
+gulp.task('init', function(callback) {
+	runSequence('less',
 		'server-responsive-check:start',
-		'server-responsive-check-postMortem',
+		'server-postMortem',
 		callback);
 });
 
@@ -298,7 +297,7 @@ gulp.task('default', function(callback) {
 	runSequence('build',
 		'server-responsive-check:start',
 		'watch',
-		'server-responsive-check-postMortem',
+		'server-postMortem',
 		callback);
 });
 
