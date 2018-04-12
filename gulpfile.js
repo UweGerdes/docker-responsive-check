@@ -1,12 +1,6 @@
 /*
  * gulpfile for responsive-check
  *
- * $ sudo npm install --global gulp
- * $ cd myProject/build/Gulp
- * $ npm install
- *
- * edit /node_modules/gulp-less/index.js:68 : replace 'done' with 'then'
- *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
 'use strict';
@@ -34,9 +28,9 @@ var autoprefixer = require('gulp-autoprefixer'),
 	uglify = require('gulp-uglify')
 	;
 
-var testDir = __dirname;
-var testLogfile = path.join(testDir, 'tests.log');
-var testHtmlLogfile = path.join(testDir, 'tests.html');
+var appDir = __dirname;
+var testLogfile = path.join(appDir, 'tests.log');
+var testHtmlLogfile = path.join(appDir, 'tests.html');
 var logMode = 0;
 var txtLog = [];
 var htmlLog = [];
@@ -55,7 +49,7 @@ var log = notify.withReporter(function (options, callback) {
  * less files lint and style check
  */
 watchFilesFor['less-lint'] = [
-	path.join(testDir, 'less', '**', '*.less')
+	path.join(appDir, 'less', '**', '*.less')
 ];
 gulp.task('less-lint', function () {
 	return gulp.src( watchFilesFor['less-lint'] )
@@ -66,8 +60,8 @@ gulp.task('less-lint', function () {
 });
 
 watchFilesFor.less = [
-	path.join(testDir, 'less', '**', '*.less'),
-	path.join(testDir, 'less', 'app.less')
+	path.join(appDir, 'less', '**', '*.less'),
+	path.join(appDir, 'less', 'app.less')
 ];
 gulp.task('less', function () {
 	var dest = function(filename) {
@@ -82,6 +76,7 @@ gulp.task('less', function () {
 		}))
 		.pipe(less())
 		.on('error', log.onError({ message:  'Error: <%= error.message %>' , title: 'LESS Error'}))
+		.on('warning', log.onError({ message:  'Warning: <%= error.message %>' , title: 'LESS Warning'}))
 		.pipe(autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9', 'ios 6', 'android 4'))
 		.pipe(gutil.env.type === 'production' ? uglify() : gutil.noop())
 		.pipe(gulp.dest(function(file) { return dest(file.path); }))
@@ -93,8 +88,8 @@ gulp.task('less', function () {
  * lint javascript files
  */
 watchFilesFor.lint = [
-	path.join(testDir, 'package.json'),
-	path.join(testDir, '**', '*.js')
+	path.join(appDir, 'package.json'),
+	path.join(appDir, '**', '*.js')
 ];
 gulp.task('lint', function(callback) {
 	return gulp.src(watchFilesFor.lint)
@@ -103,18 +98,18 @@ gulp.task('lint', function(callback) {
 		;
 });
 
-watchFilesFor['default'] = [
-	path.join(testDir, 'config', 'default.js'),
-	path.join(testDir, 'index.js'),
-	path.join(testDir, 'bin', 'load-page.js')
+watchFilesFor['tests'] = [
+	path.join(appDir, 'config', '*.js'),
+	path.join(appDir, 'index.js'),
+	path.join(appDir, 'bin', 'load-page.js')
 ];
-gulp.task('default', function(callback) {
+gulp.task('tests', function(callback) {
 	del( [
-			path.join(testDir, 'results', 'default', '*.png'),
-			path.join(testDir, 'results', 'default', '*.css.json')
+			path.join(appDir, 'results', '**'),
+			'!'  + path.join(appDir, 'results', '.gitignore')
 		], { force: true } );
 	var loader = exec('node index.js config/default.js',
-		{ cwd: testDir },
+		{ cwd: appDir },
 		function (err, stdout, stderr) {
 			logExecResults(err, stdout, stderr);
 			callback();
@@ -190,9 +185,9 @@ gulp.task('logTestResults', function(callback) {
 // start responsive-check server
 gulp.task('server-responsive-check:start', function() {
 	server.listen({
-			path: path.join(testDir, 'server.js'),
+			path: path.join(appDir, 'server.js'),
 			env: { VERBOSE: false },
-			cwd: testDir
+			cwd: appDir
 		}
 	);
 });
@@ -201,7 +196,7 @@ gulp.task('server-responsive-check:stop', function() {
 });
 // restart server-responsive-check if server.js changed
 watchFilesFor['server-responsive-check'] = [
-	path.join(testDir, 'server.js')
+	path.join(appDir, 'server.js')
 ];
 gulp.task('server-responsive-check', function() {
 	server.changed(function(error) {
@@ -225,9 +220,9 @@ gulp.task('server-postMortem', function() {
  * livereload server and task
  */
 watchFilesFor.livereload = [
-	path.join(testDir, 'views', '*.ejs'),
-	path.join(testDir, 'css', '*.css'),
-	path.join(testDir, 'results', '**', '*.log')
+	path.join(appDir, 'views', '*.ejs'),
+	path.join(appDir, 'css', '*.css'),
+	path.join(appDir, 'results', '**', '*.log')
 ];
 gulp.task('livereload', function() {
 	gulp.src(watchFilesFor.livereload)
