@@ -7,7 +7,7 @@ var phantomjs = 'phantomjs';
 
 var server = 'localhost:8080';
 var baseUrl = 'http://' + server + '/index.html';
-var selector = 'body';
+var selector = '.console';
 var destDir = 'default';
 var engines = [ phantomjs, slimerjs ];
 var viewports = [
