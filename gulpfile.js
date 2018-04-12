@@ -104,9 +104,6 @@ watchFilesFor['test-default'] = [
 	path.join(appDir, 'bin', 'load-page.js')
 ];
 gulp.task('test-default', function(callback) {
-	del( [
-			path.join(appDir, 'results', 'default', '**')
-		], { force: true } );
 	var loader = exec('node index.js config/default.js',
 		{ cwd: appDir },
 		function (err, stdout, stderr) {
