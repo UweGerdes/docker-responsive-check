@@ -6,7 +6,6 @@
 'use strict';
 
 var autoprefixer = require('gulp-autoprefixer'),
-	changed = require('gulp-changed'),
 	glob = require('glob'),
 	gulp = require('gulp'),
 	gutil = require('gulp-util'),
@@ -113,6 +112,7 @@ gulp.task('test-default', function(callback) {
 		.pipe(gulpExec('node index.js config/default.js', options))
 		.pipe(gulpExec.reporter(reportOptions))
 		.pipe(gulpLivereload( { quiet: true } ))
+		.pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp test-default' }))
 		;
 });
 
@@ -155,13 +155,12 @@ gulp.task('server-postMortem', function() {
  */
 watchFilesFor.livereload = [
 	path.join(appDir, 'views', '*.ejs'),
-	path.join(appDir, 'css', '*.css'),
-	path.join(appDir, 'results', '**', '*.log')
+	path.join(appDir, 'css', '*.css')
 ];
 gulp.task('livereload', function() {
 	gulp.src(watchFilesFor.livereload)
-		.pipe(changed(path.dirname('<%= file.path %>')))
-//		.pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp livereload' }))
+		.pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
+		.pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp livereload' }))
 		.pipe(gulpLivereload( { quiet: true } ));
 });
 
@@ -203,19 +202,6 @@ gulp.task('init', function(callback) {
 	runSequence('less',
 		'server-responsive-check:start',
 		'server-postMortem',
-		callback);
-});
-
-/*
- * selftest task: run all build tasks, start server, execute default test and shut down
- *
- * TODO implement test task
- */
-gulp.task('default', function(callback) {
-	runSequence('build',
-//		'server-responsive-check:start',
-		'test',
-//		'server-responsive-check:stop',
 		callback);
 });
 

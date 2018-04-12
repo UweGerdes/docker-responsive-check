@@ -57,7 +57,7 @@ $ docker exec -it responsive-check bash
 
 ## CHANGELOG
 
-1.8.2: refactoring gulpfile.js, index.js
+1.8.2: refactoring gulpfile.js
 
 1.8.1: updated packages
 
