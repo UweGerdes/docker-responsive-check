@@ -48,3 +48,11 @@ To connect to a running container use:
 ```bash
 $ docker exec -it responsive-check bash
 ```
+
+## CHANGELOG
+
+1.8.1: updated packages
+
+1.8.0: updated to NodeJS 8.11.x, added Dockerfile
+
+1.7.0: project extracted from frontend-development
