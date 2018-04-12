@@ -98,7 +98,7 @@ gulp.task('lint', function(callback) {
 		;
 });
 
-watchFilesFor['tests'] = [
+watchFilesFor.tests = [
 	path.join(appDir, 'config', '*.js'),
 	path.join(appDir, 'index.js'),
 	path.join(appDir, 'bin', 'load-page.js')
