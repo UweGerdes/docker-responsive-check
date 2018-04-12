@@ -98,15 +98,14 @@ gulp.task('lint', function(callback) {
 		;
 });
 
-watchFilesFor.tests = [
-	path.join(appDir, 'config', '*.js'),
+watchFilesFor['test-default'] = [
+	path.join(appDir, 'config', 'default.js'),
 	path.join(appDir, 'index.js'),
 	path.join(appDir, 'bin', 'load-page.js')
 ];
-gulp.task('tests', function(callback) {
+gulp.task('test-default', function(callback) {
 	del( [
-			path.join(appDir, 'results', '**'),
-			'!'  + path.join(appDir, 'results', '.gitignore')
+			path.join(appDir, 'results', 'default', '**')
 		], { force: true } );
 	var loader = exec('node index.js config/default.js',
 		{ cwd: appDir },
