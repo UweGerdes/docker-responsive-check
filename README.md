@@ -11,38 +11,32 @@ Run a container from the image `uwegerdes/responsive-check` and connect to your 
 ```bash
 $ docker build -t uwegerdes/responsive-check .
 $ docker run -it \
-	--name responsive-check-webserver \
+	--name responsive-check \
 	-v $(pwd)/config:/home/node/app/config \
 	-p 5381:8080 \
 	-p 5382:8081 \
-	--network="$(docker inspect --format='{{.HostConfig.NetworkMode}}' webserver)" \
-	--add-host webserver:$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' webserver) \
 	uwegerdes/responsive-check
 ```
 
-Open `http://localhost:5381/` in your favourite browser.
+Open `http://localhost:5381/` or the ip shown in the console output in your favourite browser.
 
-Stop the container with CTRL-C and exit the container with CTRL-D.
+Stop the container with CTRL-C.
 
-## Self test
+Restart the container with
 
 ```bash
-$ docker run -it \
-	--name responsive-check \
-	-v $(pwd):/home/node/app \
-	-p 5481:8080 \
-	-p 5482:8081 \
-	uwegerdes/responsive-check bash
+$ docker start -ai responsive-check
 ```
-
-Run `gulp`and open `http://localhost:5481/` in your favourite browser and open the app page, execute `default` and see the results.
-
-Stop the container with CTRL-C and exit the container with CTRL-D.
 
 ## Develop
 
 ```bash
-$ docker start -it responsive-check
+$ docker run -it \
+	--name responsive-check-dev \
+	-v $(pwd):/home/node/app \
+	-p 5481:8080 \
+	-p 5482:8081 \
+	uwegerdes/responsive-check bash
 ```
 
 Run `gulp`.
