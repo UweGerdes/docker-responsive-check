@@ -41,6 +41,12 @@ $ docker run -it \
 
 Run `gulp`.
 
+If you plan to use `npm install` please make sure to copy phantomjs to /usr/local/bin/ - it will be removed by `npm install`:
+
+```bash
+$ sudo cp /home/node/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs /usr/local/bin/
+```
+
 ## Inspect
 
 To connect to a running container use:
