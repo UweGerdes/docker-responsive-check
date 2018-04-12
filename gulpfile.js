@@ -7,12 +7,11 @@
 
 var autoprefixer = require('gulp-autoprefixer'),
 	changed = require('gulp-changed'),
-	del = require('del'),
-	exec = require('child_process').exec,
-	fs = require('fs'),
 	glob = require('glob'),
 	gulp = require('gulp'),
 	gutil = require('gulp-util'),
+	gulpChangedInPlace = require('gulp-changed-in-place'),
+	gulpExec = require('gulp-exec'),
 	jshint = require('gulp-jshint'),
 	lessChanged = require('gulp-less-changed'),
 	lesshint = require('gulp-lesshint'),
@@ -29,11 +28,6 @@ var autoprefixer = require('gulp-autoprefixer'),
 	;
 
 var appDir = __dirname;
-var testLogfile = path.join(appDir, 'tests.log');
-var testHtmlLogfile = path.join(appDir, 'tests.html');
-var logMode = 0;
-var txtLog = [];
-var htmlLog = [];
 var watchFilesFor = {};
 var gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081;
 var exitCode = 0;
@@ -104,78 +98,22 @@ watchFilesFor['test-default'] = [
 	path.join(appDir, 'bin', 'load-page.js')
 ];
 gulp.task('test-default', function(callback) {
-	var loader = exec('node index.js config/default.js',
-		{ cwd: appDir },
-		function (err, stdout, stderr) {
-			logExecResults(err, stdout, stderr);
-			callback();
-		}
-	);
-	loader.stdout.on('data', function(data) { if(!data.match(/PASS/)) { console.log(data.trim()); } });
-});
-
-// helper functions
-var logExecResults = function (err, stdout, stderr) {
-	logTxt (stdout.replace(/\u001b\[[^m]+m/g, '').match(/[^\n]*FAIL [^\n]+/g));
-	logHtml(stdout.replace(/\u001b\[[^m]+m/g, '').match(/[^\n]*FAIL [^0-9][^\n]+/g));
-	if (err) {
-		console.log(err.toString());
-		exitCode = 1;
-	}
-};
-
-var logTxt = function (msg) {
-	if (logMode === 1 && msg){
-		var txtMsg = msg.join('\n');
-		txtLog.push(txtMsg);
-	}
-};
-
-var logHtml = function (msg) {
-	if (logMode === 1 && msg){
-		var htmlMsg = msg.join('<br />')
-						.replace(/FAIL ([^ ]+) ([^ :]+)/, 'FAIL ./results/$1/$22.png')
-						.replace(/([^ ]+\/[^ ]+\.png)/g, '<a href="$1">$1</a>');
-		var errorClass = htmlMsg.indexOf('FAIL') > -1 ? ' class="fail"' : ' class="success"';
-		htmlLog.push('\t<li' + errorClass + '>' + htmlMsg + '</li>');
-	}
-};
-
-var writeTxtLog = function () {
-	if (txtLog.length > 0) {
-		fs.writeFileSync(testLogfile, txtLog.join('\n') + '\n');
-	}
-};
-
-var writeHtmlLog = function () {
-	if (htmlLog.length > 0) {
-		var html = '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8" />\n' +
-				'<title>Testergebnisse</title>\n' +
-				'<link href="compare-layouts/css/index.css" rel="stylesheet" />\n' +
-				'</head>\n<body><h1>Testergebnisse</h1>\n<ul>\n';
-		html += htmlLog.join('\n');
-		html += '</ul>\n</body>\n</html>';
-		fs.writeFileSync(testHtmlLogfile, html);
-	}
-};
-
-gulp.task('clearTestLog', function() {
-	del([ testLogfile, testHtmlLogfile ], { force: true });
-	logMode = 1;
-});
-
-gulp.task('logTestResults', function(callback) {
-	if (txtLog.length > 0) {
-		console.log('######################## TEST RESULTS ########################');
-		console.log(txtLog.join('\n'));
-	} else {
-		console.log('######################## TEST SUCCESS ########################');
-		logTxt (['SUCCESS gulp tests']);
-	}
-	writeTxtLog();
-	writeHtmlLog();
-	logMode = 0;
-	callback();
+	var options = {
+		continueOnError: false, // default = false, true means don't emit error event
+		pipeStdout: false // default = false, true means stdout is written to file.contents
+	};
+	var reportOptions = {
+		err: true, // default = true, false means don't write err
+		stderr: true, // default = true, false means don't write stderr
+		stdout: true // default = true, false means don't write stdout
+	};
+	return gulp.src(watchFilesFor['test-default'])
+		.pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
+		.pipe(log({ message: 'file changed: <%= file.path %>, executing default test', title: 'Gulp test-default' }))
+		.pipe(gulpExec('node index.js config/default.js', options))
+		.pipe(gulpExec.reporter(reportOptions))
+		.pipe(gulpLivereload( { quiet: true } ))
+		;
 });
 
 // start responsive-check server
