@@ -14,6 +14,7 @@ var autoprefixer = require('gulp-autoprefixer'),
 	jscs = require('gulp-jscs'),
 	stylish = require('gulp-jscs-stylish'),
 	jshint = require('gulp-jshint'),
+	jsonlint = require("gulp-jsonlint"),
 	lesshint = require('gulp-lesshint'),
 	less = require('gulp-less'),
 	gulpLivereload = require('gulp-livereload'),
@@ -70,17 +71,28 @@ gulp.task('less', function () {
 });
 
 /*
+ * lint json files
+ */
+watchFilesFor.jsonlint = [
+	path.join(appDir, '.jshintrc'),
+	path.join(appDir, '.jscsrc'),
+	path.join(appDir, '**', '*.json')
+];
+gulp.task('jsonlint', function () {
+	return gulp.src( watchFilesFor.jsonlint )
+		.pipe(jsonlint())
+		.pipe(jsonlint.reporter())
+		;
+});
+
+/*
  * lint javascript files
  */
 watchFilesFor.lint = [
-	path.join(appDir, '.jshintrc'),
-	path.join(appDir, '.jscsrc'),
-	path.join(appDir, 'package.json'),
 	path.join(appDir, '**', '*.js')
 ];
 gulp.task('lint', function(callback) {
 	return gulp.src(watchFilesFor.lint)
-		.pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
 		.pipe(jshint())
 		.pipe(jscs())
 		.pipe(stylish.combineWithHintResults())
@@ -93,7 +105,7 @@ watchFilesFor['test-default'] = [
 	path.join(appDir, 'index.js'),
 	path.join(appDir, 'bin', 'load-page.js')
 ];
-gulp.task('test-default', function(callback) {
+gulp.task('test-default', [ 'lint' ], function() {
 	var options = {
 		continueOnError: false, // default = false, true means don't emit error event
 		pipeStdout: false // default = false, true means stdout is written to file.contents
@@ -164,8 +176,10 @@ gulp.task('livereload', function() {
  */
 gulp.task('build', function(callback) {
 	runSequence('less-lint',
+		'jsonlint',
 		'less',
-		'lint',
+		// 'lint', // 'test-default' starts 'lint'
+		'test-default', // dry run for gulpChangedInPlace
 		callback);
 });
 
