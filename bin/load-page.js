@@ -18,8 +18,8 @@ var casper = require('casper').create(),
 	fs = require('fs');
 
 if (!phantom) {
-    console.error('CasperJS needs to be executed in a PhantomJS environment http://phantomjs.org/');
-    phantom.exit(1);
+	console.error('CasperJS needs to be executed in a PhantomJS environment http://phantomjs.org/');
+	phantom.exit(1);
 }
 
 var url = casper.cli.options.url || 'http://frontend.local/',
@@ -29,6 +29,7 @@ var url = casper.cli.options.url || 'http://frontend.local/',
 	hover = '';
 
 var verbose = false;
+var noExternal = false;
 var saveStyleTree = false;
 var selectorFound = false;
 
@@ -70,7 +71,7 @@ casper.on('remote.alert', function (message) {
 casper.options.onResourceRequested = function(C, requestData, request) {
 	if ( requestData.url.match(/https?:\/\//) ) {
 		if (verbose) { casper.echo('loading: ' + requestData.url, 'INFO'); }
-//		request.abort();
+		if (noExternal) { request.abort(); }
 	} else {
 		casper.echo('loading: ' + requestData.url, 'INFO');
 	}
@@ -78,8 +79,8 @@ casper.options.onResourceRequested = function(C, requestData, request) {
 
 // evaluated in browser, keep jshint quiet
 /* globals document, XPathResult */
-
-function _getStyles(selector, hover) {
+//TODO: implement hover
+function _getStyles(selector) {
 	var getStyles = function(element, pseudo) {
 		var styles = {};
 		var y = document.defaultView.getComputedStyle(element, pseudo);
@@ -150,7 +151,7 @@ function _getStyles(selector, hover) {
 }
 
 // check for horizontal scroll bar
-function _checkHorizontalScrollbar(selector) {
+function _checkHorizontalScrollbar() {
 	return document.body.scrollWidth > document.body.offsetWidth;
 }
 
