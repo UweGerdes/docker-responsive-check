@@ -59,8 +59,8 @@ fs.stat(destDir, (err, stats) => {
 
 function load() {
   fs.writeFileSync(destDir + '/result.log', config.baseUrl + ' ' + config.selector + ' starting\n');
-  config.engines.forEach(function(engine) {
-    config.viewports.forEach(function(viewport) {
+  config.engines.forEach(function (engine) {
+    config.viewports.forEach(function (viewport) {
       pagesExpected.push(getPageKey(engine, viewport.name));
       loadPage(config, engine, viewport, addResult);
     });
@@ -88,16 +88,17 @@ function loadPage(config, engine, viewport, callback) {
   if (verbose) {
     console.log('starting: ' + cmd + ' ' + args.join(' '));
   } else {
-    console.log('starting: ' + config.url + ' / ' + config.selector + ' with ' + engine + ' ' + viewport.name);
+    console.log('starting: ' + config.url + ' / ' + config.selector +
+                ' with ' + engine + ' ' + viewport.name);
   }
   var loader = exec(cmd + ' ' + args.join(' '), { timeout: timeout },
     function (error, stdout, stderr) {
       logExecResult('loaded page ' + page.url, error, '', stderr);
     }
   );
-  loader.stdout.on('data', function(data) { console.log(pageKey + ': ' + data.trim()); });
-  loader.stderr.on('data', function(data) { console.log(pageKey + ' stderr: ' + data.trim()); });
-  loader.on('error', function(err) { console.log(pageKey + ' error: ' + err.trim()); });
+  loader.stdout.on('data', function (data) { console.log(pageKey + ': ' + data.trim()); });
+  loader.stderr.on('data', function (data) { console.log(pageKey + ' stderr: ' + data.trim()); });
+  loader.on('error', function (err) { console.log(pageKey + ' error: ' + err.trim()); });
   loader.on('close', (code) => {
     if (code > 0) {
       console.log('load ' + page.url + ' exit: ' + code);
@@ -107,12 +108,13 @@ function loadPage(config, engine, viewport, callback) {
   });
 }
 
-var addResult = function(url, selector, engine, viewport) {
+var addResult = function (url, selector, engine, viewport) {
   pagesLoaded.push(getPageKey(engine, viewport.name));
   console.log('finished: ' + url + ' / ' + selector + ' with ' + engine + ' ' + viewport.name);
   if (pagesExpected.length === pagesLoaded.length) {
     console.log('finished all');
-    fs.appendFileSync(destDir + '/result.log', config.baseUrl + ' ' + selector + ' pages completely loaded\n');
+    fs.appendFileSync(destDir + '/result.log', config.baseUrl + ' ' +
+                      selector + ' pages completely loaded\n');
     // TODO create result page and trigger livereload
     //createHtmlPage(config, pagesLoaded);
   }
@@ -121,7 +123,7 @@ var addResult = function(url, selector, engine, viewport) {
 function logExecResult(msgStart, error, stdout, stderr) {
   if (stdout.length > 0) { console.log(msgStart + ' stdout: ' + stdout.trim()); }
   if (stderr.length > 0) { console.log(msgStart + ' stderr: ' + stderr.trim()); }
-  if (error !== null)	   { console.log(msgStart + ' error:\n' + JSON.stringify(error, undefined, 4)); }
+  if (error !== null) { console.log(msgStart + ' error:\n' + JSON.stringify(error, undefined, 4)); }
 }
 
 function getPageKey(engine, name) {
