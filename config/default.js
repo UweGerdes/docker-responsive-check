@@ -9,16 +9,16 @@ var server = 'localhost:8080';
 var baseUrl = 'http://' + server + '/index.html';
 var selector = '.console';
 var destDir = 'default';
-var engines = [ phantomjs, slimerjs ];
+var engines = [phantomjs, slimerjs];
 var viewports = [
-	{
-		'name': 'smartphone-portrait',
-		'viewport': {width: 320, height: 480}
-	},
-	{
-		'name': 'desktop-standard',
-		'viewport': {width: 1280, height: 1024}
-	}
+  {
+    'name': 'smartphone-portrait',
+    'viewport': { width: 320, height: 480 }
+  },
+  {
+    'name': 'desktop-standard',
+    'viewport': { width: 1280, height: 1024 }
+  }
 ];
 /*
  * TODO:
@@ -30,9 +30,9 @@ var credentials = [ 'username', 'pass' + 'word' ];
  */
 
 module.exports = {
-	destDir: destDir,
-	url: baseUrl,
-	selector: selector,
-	viewports: viewports,
-	engines: engines
+  destDir: destDir,
+  url: baseUrl,
+  selector: selector,
+  viewports: viewports,
+  engines: engines
 };
