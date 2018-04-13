@@ -6,26 +6,26 @@
 'use strict';
 
 var autoprefixer = require('gulp-autoprefixer'),
-	glob = require('glob'),
-	gulp = require('gulp'),
-	gutil = require('gulp-util'),
-	gulpChangedInPlace = require('gulp-changed-in-place'),
-	gulpExec = require('gulp-exec'),
-	jscs = require('gulp-jscs'),
-	stylish = require('gulp-jscs-stylish'),
-	jshint = require('gulp-jshint'),
-	jsonlint = require("gulp-jsonlint"),
-	lesshint = require('gulp-lesshint'),
-	less = require('gulp-less'),
-	gulpLivereload = require('gulp-livereload'),
-	notify = require('gulp-notify'),
-	path = require('path'),
-	postMortem = require('gulp-postmortem'),
-	os = require('os'),
-	runSequence = require('run-sequence'),
-	server = require('gulp-develop-server'),
-	uglify = require('gulp-uglify')
-	;
+  glob = require('glob'),
+  gulp = require('gulp'),
+  gutil = require('gulp-util'),
+  gulpChangedInPlace = require('gulp-changed-in-place'),
+  gulpExec = require('gulp-exec'),
+  jscs = require('gulp-jscs'),
+  stylish = require('gulp-jscs-stylish'),
+  jshint = require('gulp-jshint'),
+  jsonlint = require('gulp-jsonlint'),
+  lesshint = require('gulp-lesshint'),
+  less = require('gulp-less'),
+  gulpLivereload = require('gulp-livereload'),
+  notify = require('gulp-notify'),
+  path = require('path'),
+  postMortem = require('gulp-postmortem'),
+  os = require('os'),
+  runSequence = require('run-sequence'),
+  server = require('gulp-develop-server'),
+  uglify = require('gulp-uglify')
+  ;
 
 var appDir = __dirname;
 var watchFilesFor = {};
@@ -36,214 +36,225 @@ var exitCode = 0;
  * log only to console, not GUI
  */
 var log = notify.withReporter(function (options, callback) {
-	callback();
+  callback();
 });
 
 /*
  * less files lint and style check
  */
 watchFilesFor['less-lint'] = [
-	path.join(appDir, 'less', '**', '*.less')
+  path.join(appDir, 'less', '**', '*.less')
 ];
 gulp.task('less-lint', function () {
-	return gulp.src( watchFilesFor['less-lint'] )
-		.pipe(lesshint())  // enforce style guide
-		.on('error', function (err) {})
-		.pipe(lesshint.reporter())
-		;
+  return gulp.src(watchFilesFor['less-lint'])
+    .pipe(lesshint())  // enforce style guide
+    .on('error', log.onError({
+      message: 'Error: <%= error.message %>',
+      title: 'LESS-Lint Error' }))
+    .on('warning', log.onError({
+      message: 'Warning: <%= error.message %>',
+      title: 'LESS-Lint Warning' }))
+    .pipe(lesshint.reporter())
+    ;
 });
 
 watchFilesFor.less = [
-	path.join(appDir, 'less', '**', '*.less'),
-	path.join(appDir, 'less', 'app.less')
+  path.join(appDir, 'less', '**', '*.less'),
+  path.join(appDir, 'less', 'app.less')
 ];
 gulp.task('less', function () {
-	var src = watchFilesFor.less.filter(function(el){return el.indexOf('/**/') == -1; });
-	return gulp.src( src )
-		.pipe(less())
-		.on('error', log.onError({ message:  'Error: <%= error.message %>' , title: 'LESS Error'}))
-		.on('warning', log.onError({ message:  'Warning: <%= error.message %>' , title: 'LESS Warning'}))
-		.pipe(autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9', 'ios 6', 'android 4'))
-		.pipe(gutil.env.type === 'production' ? uglify() : gutil.noop())
-		.pipe(gulp.dest(path.join(appDir, 'css')))
-		.pipe(log({ message: 'written: <%= file.path %>', title: 'Gulp less' }))
-		;
+  var src = watchFilesFor.less.filter(function (el) { return el.indexOf('/**/') == -1; });
+  return gulp.src(src)
+    .pipe(less())
+    .on('error', log.onError({ message: 'Error: <%= error.message %>', title: 'LESS Error' }))
+    .on('warning', log.onError({ message: 'Warning: <%= error.message %>', title: 'LESS Warning' }))
+    .pipe(autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9', 'ios 6', 'android 4'))
+    .pipe(gutil.env.type === 'production' ? uglify() : gutil.noop())
+    .pipe(gulp.dest(path.join(appDir, 'css')))
+    .pipe(log({ message: 'written: <%= file.path %>', title: 'Gulp less' }))
+    ;
 });
 
 /*
  * lint json files
  */
 watchFilesFor.jsonlint = [
-	path.join(appDir, '.jshintrc'),
-	path.join(appDir, '.jscsrc'),
-	path.join(appDir, '**', '*.json')
+  path.join(appDir, '.jshintrc'),
+  path.join(appDir, '.jscsrc'),
+  path.join(appDir, '**', '*.json')
 ];
 gulp.task('jsonlint', function () {
-	return gulp.src( watchFilesFor.jsonlint )
-		.pipe(jsonlint())
-		.pipe(jsonlint.reporter())
-		;
+  return gulp.src(watchFilesFor.jsonlint)
+    .pipe(jsonlint())
+    .pipe(jsonlint.reporter())
+    ;
 });
 
 /*
  * lint javascript files
  */
 watchFilesFor.lint = [
-	path.join(appDir, '**', '*.js')
+  path.join(appDir, '**', '*.js')
 ];
-gulp.task('lint', function(callback) {
-	return gulp.src(watchFilesFor.lint)
-		.pipe(jshint())
-		.pipe(jscs())
-		.pipe(stylish.combineWithHintResults())
-		.pipe(jshint.reporter('jshint-stylish'))
-		;
+gulp.task('lint', function () {
+  return gulp.src(watchFilesFor.lint)
+//    .pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
+    .pipe(jshint())
+    .pipe(jscs())
+    .pipe(stylish.combineWithHintResults())
+    .pipe(jshint.reporter('jshint-stylish'))
+    ;
 });
 
 watchFilesFor['test-default'] = [
-	path.join(appDir, 'config', 'default.js'),
-	path.join(appDir, 'index.js'),
-	path.join(appDir, 'bin', 'load-page.js')
+  path.join(appDir, 'config', 'default.js'),
+  path.join(appDir, 'index.js'),
+  path.join(appDir, 'bin', 'load-page.js')
 ];
-gulp.task('test-default', [ 'lint' ], function() {
-	var options = {
-		continueOnError: false, // default = false, true means don't emit error event
-		pipeStdout: false // default = false, true means stdout is written to file.contents
-	};
-	var reportOptions = {
-		err: true, // default = true, false means don't write err
-		stderr: true, // default = true, false means don't write stderr
-		stdout: true // default = true, false means don't write stdout
-	};
-	return gulp.src(watchFilesFor['test-default'])
-		.pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
-		.pipe(log({ message: 'file changed: <%= file.path %>, executing default test', title: 'Gulp test-default' }))
-		.pipe(gulpExec('node index.js config/default.js', options))
-		.pipe(gulpExec.reporter(reportOptions))
-		.pipe(gulpLivereload( { quiet: true } ))
-		.pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp test-default' }))
-		;
+gulp.task('test-default', ['lint'], function () {
+  var options = {
+    continueOnError: false, // default = false, true means don't emit error event
+    pipeStdout: false // default = false, true means stdout is written to file.contents
+  };
+  var reportOptions = {
+    err: true, // default = true, false means don't write err
+    stderr: true, // default = true, false means don't write stderr
+    stdout: true // default = true, false means don't write stdout
+  };
+  return gulp.src(watchFilesFor['test-default'])
+    .pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
+    .pipe(log({ message: 'file changed: <%= file.path %>, executing default test',
+                title: 'Gulp test-default' }))
+    .pipe(gulpExec('node index.js config/default.js', options))
+    .pipe(gulpExec.reporter(reportOptions))
+    .pipe(gulpLivereload({ quiet: true }))
+    .pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp test-default' }))
+    ;
 });
 
 // start responsive-check server
-gulp.task('server-responsive-check:start', function() {
-	server.listen({
-			path: path.join(appDir, 'server.js'),
-			env: { VERBOSE: false },
-			cwd: appDir
-		}
-	);
+gulp.task('server-responsive-check:start', function () {
+  server.listen({
+      path: path.join(appDir, 'server.js'),
+      env: { VERBOSE: false },
+      cwd: appDir
+    }
+  );
 });
-gulp.task('server-responsive-check:stop', function() {
-    server.kill();
+gulp.task('server-responsive-check:stop', function () {
+  server.kill();
 });
 // restart server-responsive-check if server.js changed
 watchFilesFor['server-responsive-check'] = [
-	path.join(appDir, 'server.js')
+  path.join(appDir, 'server.js')
 ];
-gulp.task('server-responsive-check', function() {
-	server.changed(function(error) {
-		if(error) {
-			console.log('responsive-check server.js restart error: ' + JSON.stringify(error, null, 4));
-		}
-	});
+gulp.task('server-responsive-check', function () {
+  server.changed(function (error) {
+    if (error) {
+      console.log('responsive-check server.js restart error: ' + JSON.stringify(error, null, 4));
+    }
+  });
 });
 /*
  * gulp postmortem task to stop server on termination of gulp
  */
-gulp.task('server-postMortem', function() {
-	return gulp.src( watchFilesFor['server-responsive-check'] )
-		.pipe(postMortem({gulp: gulp, tasks: [ 'server-responsive-check:stop' ]}))
-		;
+gulp.task('server-postMortem', function () {
+  return gulp.src(watchFilesFor['server-responsive-check'])
+    .pipe(postMortem({ gulp: gulp, tasks: ['server-responsive-check:stop'] }))
+    ;
 });
 
 /*
  * livereload server and task
  */
 watchFilesFor.livereload = [
-	path.join(appDir, 'views', '*.ejs'),
-	path.join(appDir, 'css', '*.css')
+  path.join(appDir, 'views', '*.ejs'),
+  path.join(appDir, 'css', '*.css')
 ];
-gulp.task('livereload', function() {
-	gulp.src(watchFilesFor.livereload)
-		.pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
-		.pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp livereload' }))
-		.pipe(gulpLivereload( { quiet: true } ));
+gulp.task('livereload', function () {
+  gulp.src(watchFilesFor.livereload)
+    .pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
+    .pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp livereload' }))
+    .pipe(gulpLivereload({ quiet: true }));
 });
 
 /*
  * run all build tasks
  */
-gulp.task('build', function(callback) {
-	runSequence('less-lint',
-		'jsonlint',
-		'less',
-		// 'lint', // 'test-default' starts 'lint'
-		'test-default', // dry run for gulpChangedInPlace
-		callback);
+gulp.task('build', function (callback) {
+  runSequence('less-lint',
+    'jsonlint',
+    'less',
+    // 'lint', // 'test-default' starts 'lint'
+    'test-default', // dry run for gulpChangedInPlace
+    callback);
 });
 
 /*
  * watch task
  */
-gulp.task('watch', function() {
-	Object.keys(watchFilesFor).forEach(function(task) {
-		watchFilesFor[task].forEach(function(filename) {
-			glob(filename, function(err, files) {
-				if (err) {
-					console.log(filename + ' error: ' + JSON.stringify(err, null, 4));
-				}
-				if (files.length === 0) {
-					console.log(filename + ' not found');
-				}
-			});
-		});
-		gulp.watch( watchFilesFor[task], [ task ] );
-	});
-	gulpLivereload.listen( { port: gulpLivereloadPort, delay: 2000 } );
-	console.log('gulp livereload listening on http://' + ipv4adresses()[0] + ':' + gulpLivereloadPort);
+gulp.task('watch', function () {
+  Object.keys(watchFilesFor).forEach(function (task) {
+    watchFilesFor[task].forEach(function (filename) {
+      glob(filename, function (err, files) {
+        if (err) {
+          console.log(filename + ' error: ' + JSON.stringify(err, null, 4));
+        }
+        if (files.length === 0) {
+          console.log(filename + ' not found');
+        }
+      });
+    });
+    gulp.watch(watchFilesFor[task], [task]);
+  });
+  gulpLivereload.listen({ port: gulpLivereloadPort, delay: 2000 });
+  console.log('gulp livereload listening on http://' + ipv4adresses()[0] +
+    ':' + gulpLivereloadPort);
 });
 
 /*
  * init task: start server
  */
-gulp.task('init', function(callback) {
-	runSequence('less',
-		'server-responsive-check:start',
-		'server-postMortem',
-		callback);
+gulp.task('init', function (callback) {
+  runSequence('less',
+    'server-responsive-check:start',
+    'server-postMortem',
+    callback);
 });
 
 /*
  * default task: run all build tasks and watch
  */
-gulp.task('default', function(callback) {
-	runSequence('build',
-		'server-responsive-check:start',
-		'watch',
-		'server-postMortem',
-		callback);
+gulp.task('default', function (callback) {
+  runSequence('build',
+    'server-responsive-check:start',
+    'watch',
+    'server-postMortem',
+    callback);
 });
 
 process.on('exit', function () {
-	process.exit(exitCode);
+  process.exit(exitCode);
 });
 
 function ipv4adresses() {
-	var addresses = [];
-	var interfaces = os.networkInterfaces();
-	for (var k in interfaces) {
-		for (var k2 in interfaces[k]) {
-			var address = interfaces[k][k2];
-			if (address.family === 'IPv4' && !address.internal) {
-				addresses.push(address.address);
-			}
-		}
-	}
-	return addresses;
+  var addresses = [];
+  var interfaces = os.networkInterfaces();
+  for (var k in interfaces) {
+    if (interfaces.hasOwnProperty(k)) {
+      for (var k2 in interfaces[k]) {
+        if (interfaces[k].hasOwnProperty(k2)) {
+          var address = interfaces[k][k2];
+          if (address.family === 'IPv4' && !address.internal) {
+            addresses.push(address.address);
+          }
+        }
+      }
+    }
+  }
+  return addresses;
 }
-
 module.exports = {
-	gulp: gulp,
-	watchFilesFor: watchFilesFor
+  gulp: gulp,
+  watchFilesFor: watchFilesFor
 };
