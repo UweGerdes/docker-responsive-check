@@ -1,7 +1,7 @@
 {
   "name": "responsive-check",
   "description": "Gulp and other packages for frontend testing: responsive-check",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "keywords": [
     "gulp",
     "frontend",

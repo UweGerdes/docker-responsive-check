@@ -139,7 +139,7 @@ function runConfig(config, res) {
 		}
 		log('server finished ' + config);
 		running.splice(running.indexOf(config), 1);
-		res.write('<div class="close"><a href="javascript:window.close();">close window</a></div></div>\n</body>\n</html>\n');
+		res.write('</div>\n</body>\n</html>\n');
 		if (running.length === 0) {
 			res.end();
 		}
