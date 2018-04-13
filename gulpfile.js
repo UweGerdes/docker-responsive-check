@@ -124,10 +124,8 @@ watchFilesFor['server-responsive-check'] = [
 ];
 gulp.task('server-responsive-check', function() {
 	server.changed(function(error) {
-		if( error ) {
+		if(error) {
 			console.log('responsive-check server.js restart error: ' + JSON.stringify(error, null, 4));
-		} else {
-			console.log('responsive-check server.js restarted');
 		}
 	});
 });
