@@ -39,13 +39,9 @@ $ docker run -it \
 	uwegerdes/responsive-check bash
 ```
 
+On first start phantomjs is installed (installation in Dockerfile always fails - dunno why) and copied as sudo - enter node password.
+
 Run `gulp`.
-
-If you plan to use `npm install` please make sure to copy phantomjs to /usr/local/bin/ - it will be removed by `npm install`:
-
-```bash
-$ sudo cp /home/node/node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs /usr/local/bin/
-```
 
 ## Inspect
 
