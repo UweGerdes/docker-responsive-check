@@ -7,9 +7,10 @@
  */
 'use strict';
 
-var fs = require('fs'),
-	path = require('path'),
-	exec = require('child_process').exec;
+var exec = require('child_process').exec,
+//	del = require('del'),
+	fs = require('fs'),
+	path = require('path');
 
 var configFile = 'config/default.js';
 var timeout = 40000;
@@ -25,6 +26,13 @@ var resultsDir = './results';
 var destDir = path.join(resultsDir, config.destDir);
 var pagesExpected = [];
 var pagesLoaded = [];
+
+
+/*
+console.log(path.join(destDir, '**'));
+del( [ path.join(destDir, '*') ], { force: true } )
+	.then(load());
+*/
 
 if (!fs.existsSync(resultsDir)) {
 	fs.mkdirSync(resultsDir);
@@ -90,7 +98,7 @@ function loadPage(config, engine, viewport, callback) {
 	loader.stdout.on('data', function(data) { console.log(pageKey + ': ' + data.trim()); });
 	loader.stderr.on('data', function(data) { console.log(pageKey + ' stderr: ' + data.trim()); });
 	loader.on('error', function(err) { console.log(pageKey + ' error: ' + err.trim()); });
-	loader.on('close', function(code) {
+	loader.on('close', (code) => {
 		if (code > 0) {
 			console.log('load ' + page.url + ' exit: ' + code);
 		}
