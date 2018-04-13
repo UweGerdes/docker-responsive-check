@@ -34,6 +34,8 @@
     "gulp-changed-in-place": "^2.3.0",
     "gulp-develop-server": "^0.5.2",
     "gulp-exec": "^3.0.1",
+    "gulp-jscs": "^4.1.0",
+    "gulp-jscs-stylish": "^1.4.0",
     "gulp-jshint": "^2.1.0",
     "gulp-less": "^3.5.0",
     "gulp-lesshint": "^5.0.0",

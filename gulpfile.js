@@ -11,6 +11,8 @@ var autoprefixer = require('gulp-autoprefixer'),
 	gutil = require('gulp-util'),
 	gulpChangedInPlace = require('gulp-changed-in-place'),
 	gulpExec = require('gulp-exec'),
+	jscs = require('gulp-jscs'),
+	stylish = require('gulp-jscs-stylish'),
 	jshint = require('gulp-jshint'),
 	lesshint = require('gulp-lesshint'),
 	less = require('gulp-less'),
@@ -71,13 +73,18 @@ gulp.task('less', function () {
  * lint javascript files
  */
 watchFilesFor.lint = [
+	path.join(appDir, '.jshintrc'),
+	path.join(appDir, '.jscsrc'),
 	path.join(appDir, 'package.json'),
 	path.join(appDir, '**', '*.js')
 ];
 gulp.task('lint', function(callback) {
 	return gulp.src(watchFilesFor.lint)
+		.pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
 		.pipe(jshint())
-		.pipe(jshint.reporter('default'))
+		.pipe(jscs())
+		.pipe(stylish.combineWithHintResults())
+		.pipe(jshint.reporter('jshint-stylish'))
 		;
 });
 

@@ -1,13 +1,12 @@
 {
 	"node": true,
-	"esnext": true,
+	"esversion": 5,
 	"bitwise": true,
-	"camelcase": true,
 	"curly": true,
-	"immed": true,
-	"newcap": true,
+	"evil": true,
+	"forin": true,
 	"noarg": true,
+	"strict": true,
 	"undef": true,
-	"unused": "vars",
-	"strict": true
+	"unused": true
 }
