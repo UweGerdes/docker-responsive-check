@@ -1,10 +1,10 @@
 /*
- * Start eines HTTP-Servers für responsive-check
+ * Start a HTTP servers for responsive-check
  *
  * node server.js
  *
- * config-Dateien in ./config
- * Ergebnis-Dateien in ./results
+ * config files in ./config
+ * results in ./results
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
@@ -88,6 +88,8 @@ app.get('*', function(req, res){
 
 // Fire it up!
 app.listen(httpPort);
+
+// Get IP for console message
 var addresses = [];
 for (var k in interfaces) {
     for (var k2 in interfaces[k]) {
@@ -97,10 +99,9 @@ for (var k in interfaces) {
         }
     }
 }
-// console.log("IP address of container  :  " + addresses);
+// console.log("IP addresses of container:  ", addresses);
 console.log('responsive-check server listening on http://' + addresses[0] + ':' + httpPort);
 
-// Model //
 // get configurations
 function getConfigs() {
 	configs = [];
