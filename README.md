@@ -2,7 +2,7 @@
 
 Make screenshots for different device viewports and see them on one page with the server.
 
-The example configs tests use my frontend-development sample application where a user can create an account, confirm, login, modify and delete the account.
+The example configs tests the built in server index.html. You find usage info there
 
 ## Run gulp docker image
 

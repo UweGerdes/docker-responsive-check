@@ -2,7 +2,7 @@
  * Load page and take screenshot of element, save the html code and styles
  * add additional information like "hasHorizontalScrollbar"
  *
- * casperjs load-page.js --url="http://frontend.local/login/" --selector="form" --dest=./results/testcase --width=720'];
+ * casperjs load-page.js --url="http://host.tld/path/page.html" --selector=".container" --dest=./results/testname --width=720
  *
  * additional argument to overwrite config settings:
  * --hover="#submit" --blacklist="adserv,doubleclick" --whitelist="trustedhostname.de"
@@ -11,8 +11,7 @@
  */
 'use strict';
 
-/* jshint esversion: 5, varstmt: false */
-/* globals phantom */
+/* jshint esversion: 5, varstmt: false, phantom: true */
 
 var casper = require('casper').create(),
   x = require('casper').selectXPath,

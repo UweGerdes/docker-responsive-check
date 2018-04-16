@@ -144,7 +144,7 @@ function runConfig(config, res) {
   if (fs.existsSync(logfilePath)) {
     fs.unlinkSync(logfilePath);
   }
-  const loader = exec('node index.js ' + 'config/' + config + '.js');
+  const loader = exec('node index.js ' + config + '.js');
   loader.stdout.on('data', function (data) { log(data.toString().trim()); });
   loader.stderr.on('data', function (data) { log(data.toString().trim()); });
   loader.on('error', function (err) { log(' error: ' + err.toString().trim()); });

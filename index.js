@@ -1,7 +1,7 @@
 /*
  * load html pages in different screen widths
  *
- * node index.js config/<configname>.js
+ * node index.js <configname>.js
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
@@ -13,17 +13,18 @@ const exec = require('child_process').exec,
   fs = require('fs'),
   path = require('path');
 
-let configFile = 'config/default.js';
+const configDir = './config';
+const resultsDir = './results';
+let configFile = 'default.js';
 const timeout = 40000;
 
 if (process.argv[2]) {
   configFile = process.argv[2];
 }
-const config = require('./' + configFile);
+const config = require(configDir + '/' + configFile);
 
 let verbose = false;
 
-const resultsDir = './results';
 const destDir = path.join(resultsDir, config.destDir);
 let pagesExpected = [];
 let pagesLoaded = [];

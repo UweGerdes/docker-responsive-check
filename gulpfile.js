@@ -124,7 +124,7 @@ gulp.task('test-default', ['lint'], function () {
     .pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
     .pipe(log({ message: 'file changed: <%= file.path %>, executing default test',
                 title: 'Gulp test-default' }))
-    .pipe(gulpExec('node index.js config/default.js', options))
+    .pipe(gulpExec('node index.js default.js', options))
     .pipe(gulpExec.reporter(reportOptions))
     .pipe(gulpLivereload({ quiet: true }))
     .pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp test-default' }))
