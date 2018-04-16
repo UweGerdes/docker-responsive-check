@@ -10,7 +10,7 @@
  */
 'use strict';
 
-var bodyParser = require('body-parser'),
+const bodyParser = require('body-parser'),
   exec = require('child_process').exec,
   express = require('express'),
   fs = require('fs'),
@@ -18,22 +18,22 @@ var bodyParser = require('body-parser'),
   os = require('os'),
   path = require('path');
 
-var app = express();
+const app = express();
 
-var httpPort = process.env.RESPONSIVE_CHECK_HTTP || 8080,
+const httpPort = process.env.RESPONSIVE_CHECK_HTTP || 8080,
   gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081;
 
-var verbose = (process.env.VERBOSE == 'true');
+const verbose = (process.env.VERBOSE == 'true');
 
-var baseDir = '/results',
+const baseDir = '/results',
   configDir = path.join(__dirname, 'config'),
   resultsDir = path.join(__dirname, 'results');
 
-var running = [];
+const running = [];
 
-var configs = getConfigs();
+const configs = getConfigs();
 
-var addresses = ipv4adresses();
+const addresses = ipv4adresses();
 
 if (!fs.existsSync(resultsDir)) {
   fs.mkdirSync(resultsDir);
@@ -53,9 +53,9 @@ app.use(express.static(__dirname));
 
 // Handle form post requests for result view
 app.get('/results/:config', function (req, res) {
-  var config = {};
+  let config = {};
   if (req.params.config) {
-    var configFilename = path.join(configDir, req.params.config + '.js');
+    const configFilename = path.join(configDir, req.params.config + '.js');
     if (fs.existsSync(configFilename)) {
       config = require(configFilename);
       res.render('resultView.ejs', {
@@ -94,13 +94,13 @@ app.listen(httpPort);
 
 // Get IP for console message
 function ipv4adresses() {
-  var addresses = [];
-  var interfaces = os.networkInterfaces();
-  for (var k in interfaces) {
+  const addresses = [];
+  const interfaces = os.networkInterfaces();
+  for (let k in interfaces) {
     if (interfaces.hasOwnProperty(k)) {
-      for (var k2 in interfaces[k]) {
+      for (let k2 in interfaces[k]) {
         if (interfaces[k].hasOwnProperty(k2)) {
-          var address = interfaces[k][k2];
+          const address = interfaces[k][k2];
           if (address.family === 'IPv4' && !address.internal) {
             addresses.push(address.address);
           }
@@ -116,9 +116,9 @@ console.log('responsive-check server listening on http://' + addresses[0] + ':' 
 
 // get configurations
 function getConfigs() {
-  configs = [];
+  const configs = [];
   fs.readdirSync(configDir).forEach(function (fileName) {
-    var configName = fileName.replace(/\.js/, '');
+    const configName = fileName.replace(/\.js/, '');
     configs.push(configName);
   });
   return configs;
@@ -126,9 +126,9 @@ function getConfigs() {
 
 // start compare-layouts with config file
 function runConfig(config, res) {
-  var destDir = path.join(__dirname, 'results', config);
-  var logfilePath = path.join(destDir, 'result.log');
-  var log = function (msg) {
+  const destDir = path.join(__dirname, 'results', config);
+  const logfilePath = path.join(destDir, 'result.log');
+  const log = function (msg) {
     console.log(msg);
     fs.appendFileSync(logfilePath, msg + '\n');
     res.write(replaceAnsiColors(msg).replace(/\n/, '<br />\n') + '<br />\n');
@@ -144,7 +144,7 @@ function runConfig(config, res) {
   if (fs.existsSync(logfilePath)) {
     fs.unlinkSync(logfilePath);
   }
-  var loader = exec('node index.js ' + 'config/' + config + '.js');
+  const loader = exec('node index.js ' + 'config/' + config + '.js');
   loader.stdout.on('data', function (data) { log(data.toString().trim()); });
   loader.stderr.on('data', function (data) { log(data.toString().trim()); });
   loader.on('error', function (err) { log(' error: ' + err.toString().trim()); });
@@ -162,8 +162,8 @@ function runConfig(config, res) {
 }
 
 function replaceAnsiColors(string) {
-  var result = '';
-  var replaceTable = {
+  let result = '';
+  const replaceTable = {
     '0': 'none',
     '1': 'font-weight: bold',
     '4': 'text-decoration: underscore',

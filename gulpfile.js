@@ -5,7 +5,7 @@
  */
 'use strict';
 
-var autoprefixer = require('gulp-autoprefixer'),
+const autoprefixer = require('gulp-autoprefixer'),
   glob = require('glob'),
   gulp = require('gulp'),
   gutil = require('gulp-util'),
@@ -27,15 +27,15 @@ var autoprefixer = require('gulp-autoprefixer'),
   uglify = require('gulp-uglify')
   ;
 
-var appDir = __dirname;
-var watchFilesFor = {};
-var gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081;
-var exitCode = 0;
+const appDir = __dirname;
+const watchFilesFor = {};
+const gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081;
+let exitCode = 0;
 
 /*
  * log only to console, not GUI
  */
-var log = notify.withReporter(function (options, callback) {
+const log = notify.withReporter(function (options, callback) {
   callback();
 });
 
@@ -63,7 +63,7 @@ watchFilesFor.less = [
   path.join(appDir, 'less', 'app.less')
 ];
 gulp.task('less', function () {
-  var src = watchFilesFor.less.filter(function (el) { return el.indexOf('/**/') == -1; });
+  const src = watchFilesFor.less.filter(function (el) { return el.indexOf('/**/') == -1; });
   return gulp.src(src)
     .pipe(less())
     .on('error', log.onError({ message: 'Error: <%= error.message %>', title: 'LESS Error' }))
@@ -98,7 +98,6 @@ watchFilesFor.lint = [
 ];
 gulp.task('lint', function () {
   return gulp.src(watchFilesFor.lint)
-//    .pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
     .pipe(jshint())
     .pipe(jscs())
     .pipe(stylish.combineWithHintResults())
@@ -112,11 +111,11 @@ watchFilesFor['test-default'] = [
   path.join(appDir, 'bin', 'load-page.js')
 ];
 gulp.task('test-default', ['lint'], function () {
-  var options = {
+  const options = {
     continueOnError: false, // default = false, true means don't emit error event
     pipeStdout: false // default = false, true means stdout is written to file.contents
   };
-  var reportOptions = {
+  const reportOptions = {
     err: true, // default = true, false means don't write err
     stderr: true, // default = true, false means don't write stderr
     stdout: true // default = true, false means don't write stdout
@@ -133,7 +132,7 @@ gulp.task('test-default', ['lint'], function () {
 });
 
 // start responsive-check server
-gulp.task('server-responsive-check:start', function () {
+gulp.task('server:start', function () {
   server.listen({
       path: path.join(appDir, 'server.js'),
       env: { VERBOSE: false },
@@ -141,14 +140,14 @@ gulp.task('server-responsive-check:start', function () {
     }
   );
 });
-gulp.task('server-responsive-check:stop', function () {
+gulp.task('server:stop', function () {
   server.kill();
 });
-// restart server-responsive-check if server.js changed
-watchFilesFor['server-responsive-check'] = [
+// restart server if server.js changed
+watchFilesFor.server = [
   path.join(appDir, 'server.js')
 ];
-gulp.task('server-responsive-check', function () {
+gulp.task('server', function () {
   server.changed(function (error) {
     if (error) {
       console.log('responsive-check server.js restart error: ' + JSON.stringify(error, null, 4));
@@ -159,8 +158,8 @@ gulp.task('server-responsive-check', function () {
  * gulp postmortem task to stop server on termination of gulp
  */
 gulp.task('server-postMortem', function () {
-  return gulp.src(watchFilesFor['server-responsive-check'])
-    .pipe(postMortem({ gulp: gulp, tasks: ['server-responsive-check:stop'] }))
+  return gulp.src(watchFilesFor.server)
+    .pipe(postMortem({ gulp: gulp, tasks: ['server:stop'] }))
     ;
 });
 
@@ -217,7 +216,7 @@ gulp.task('watch', function () {
  */
 gulp.task('init', function (callback) {
   runSequence('less',
-    'server-responsive-check:start',
+    'server:start',
     'server-postMortem',
     callback);
 });
@@ -227,7 +226,7 @@ gulp.task('init', function (callback) {
  */
 gulp.task('default', function (callback) {
   runSequence('build',
-    'server-responsive-check:start',
+    'server:start',
     'watch',
     'server-postMortem',
     callback);
@@ -238,13 +237,13 @@ process.on('exit', function () {
 });
 
 function ipv4adresses() {
-  var addresses = [];
-  var interfaces = os.networkInterfaces();
-  for (var k in interfaces) {
+  const addresses = [];
+  const interfaces = os.networkInterfaces();
+  for (let k in interfaces) {
     if (interfaces.hasOwnProperty(k)) {
-      for (var k2 in interfaces[k]) {
+      for (let k2 in interfaces[k]) {
         if (interfaces[k].hasOwnProperty(k2)) {
-          var address = interfaces[k][k2];
+          const address = interfaces[k][k2];
           if (address.family === 'IPv4' && !address.internal) {
             addresses.push(address.address);
           }

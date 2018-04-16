@@ -2,15 +2,15 @@
  * default configuration for responsive-check
  */
 
-var slimerjs = 'slimerjs';
-var phantomjs = 'phantomjs';
+const slimerjs = 'slimerjs';
+const phantomjs = 'phantomjs';
 
-var server = 'localhost:8080';
-var baseUrl = 'http://' + server + '/index.html';
-var selector = '.console';
-var destDir = 'default';
-var engines = [phantomjs, slimerjs];
-var viewports = [
+const server = 'localhost:8080';
+const baseUrl = 'http://' + server + '/index.html';
+const selector = '.console';
+const destDir = 'default';
+const engines = [phantomjs, slimerjs];
+const viewports = [
   {
     'name': 'smartphone-portrait',
     'viewport': { width: 320, height: 480 }
@@ -22,11 +22,11 @@ var viewports = [
 ];
 /*
  * TODO:
-var resultStyles = 'body{background-color:#666666}';
-var hover = "#submit";
-var whitelist = 'www.uwegerdes.de'; // allow load from uri with this substring
-var blacklist = '.js'; // do not load - even if it comes from whitelist
-var credentials = [ 'username', 'pass' + 'word' ];
+const resultStyles = 'body{background-color:#666666}';
+const hover = "#submit";
+const whitelist = 'www.uwegerdes.de'; // allow load from uri with this substring
+const blacklist = '.js'; // do not load - even if it comes from whitelist
+const credentials = [ 'username', 'pass' + 'word' ];
  */
 
 module.exports = {

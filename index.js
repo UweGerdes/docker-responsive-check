@@ -5,7 +5,7 @@
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
-/*jshint esversion: 6 */
+
 'use strict';
 
 const exec = require('child_process').exec,
@@ -40,7 +40,7 @@ if (!fs.existsSync(resultsDir)) {
 fs.stat(destDir, (err, stats) => {
   if (!stats) {
     fs.mkdir(destDir,
-      function (err, data) {
+      (err, data) => {
         if (err)  { throw err; }
         if (data) { console.log(data); }
         console.log('directory "' + destDir + '" created');
@@ -58,9 +58,8 @@ fs.stat(destDir, (err, stats) => {
 });
 
 function load() {
-  fs.writeFileSync(destDir + '/result.log', config.baseUrl + ' ' + config.selector + ' starting\n');
-  config.engines.forEach(function (engine) {
-    config.viewports.forEach(function (viewport) {
+  config.engines.forEach((engine) => {
+    config.viewports.forEach((viewport) => {
       pagesExpected.push(getPageKey(engine, viewport.name));
       loadPage(config, engine, viewport, addResult);
     });
@@ -68,18 +67,18 @@ function load() {
 }
 
 function loadPage(config, engine, viewport, callback) {
-  var pageKey = getPageKey(engine, viewport.name);
-  var dest = path.join(destDir, pageKey);
-  var page = {
+  const pageKey = getPageKey(engine, viewport.name);
+  const dest = path.join(destDir, pageKey);
+  const page = {
     'loaded': false
   };
-  var args = ['./bin/load-page.js',
+  const args = ['./bin/load-page.js',
     '--url="' + config.url + '"',
     '--selector="' + config.selector + '"',
     '--dest="' + dest + '"',
     '--engine="' + engine + '"',
     '--width="' + viewport.viewport.width + '"'];
-  var cmd = 'casperjs';
+  let cmd = 'casperjs';
   if (engine === 'slimerjs') {
     //			cmd = 'xvfb-run -a -e ./xvfb-run.stdout casperjs';
     cmd = 'xvfb-run -a casperjs';
@@ -91,14 +90,14 @@ function loadPage(config, engine, viewport, callback) {
     console.log('starting: ' + config.url + ' / ' + config.selector +
                 ' with ' + engine + ' ' + viewport.name);
   }
-  var loader = exec(cmd + ' ' + args.join(' '), { timeout: timeout },
-    function (error, stdout, stderr) {
+  const loader = exec(cmd + ' ' + args.join(' '), { timeout: timeout },
+    (error, stdout, stderr) => {
       logExecResult('loaded page ' + page.url, error, '', stderr);
     }
   );
-  loader.stdout.on('data', function (data) { console.log(pageKey + ': ' + data.trim()); });
-  loader.stderr.on('data', function (data) { console.log(pageKey + ' stderr: ' + data.trim()); });
-  loader.on('error', function (err) { console.log(pageKey + ' error: ' + err.trim()); });
+  loader.stdout.on('data', (data) => { console.log(pageKey + ': ' + data.trim()); });
+  loader.stderr.on('data', (data) => { console.log(pageKey + ' stderr: ' + data.trim()); });
+  loader.on('error', (err) => { console.log(pageKey + ' error: ' + err.trim()); });
   loader.on('close', (code) => {
     if (code > 0) {
       console.log('load ' + page.url + ' exit: ' + code);
@@ -108,7 +107,7 @@ function loadPage(config, engine, viewport, callback) {
   });
 }
 
-var addResult = function (url, selector, engine, viewport) {
+const addResult = (url, selector, engine, viewport) => {
   pagesLoaded.push(getPageKey(engine, viewport.name));
   console.log('finished: ' + url + ' / ' + selector + ' with ' + engine + ' ' + viewport.name);
   if (pagesExpected.length === pagesLoaded.length) {

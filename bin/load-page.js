@@ -11,6 +11,7 @@
  */
 'use strict';
 
+/* jshint esversion: 5, varstmt: false */
 /* globals phantom */
 
 var casper = require('casper').create(),
