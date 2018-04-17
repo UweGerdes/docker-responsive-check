@@ -105,6 +105,9 @@ gulp.task('lint', function () {
     ;
 });
 
+/*
+ * run default test
+ */
 watchFilesFor['test-default'] = [
   path.join(appDir, 'config', 'default.js'),
   path.join(appDir, 'index.js'),
@@ -131,6 +134,9 @@ gulp.task('test-default', ['lint'], function () {
     ;
 });
 
+/*
+ * start, stop, restart server
+ */
 // start responsive-check server
 gulp.task('server:start', function () {
   server.listen({
@@ -143,20 +149,21 @@ gulp.task('server:start', function () {
 gulp.task('server:stop', function () {
   server.kill();
 });
-// restart server if server.js changed
-watchFilesFor.server = [
-  path.join(appDir, 'server.js')
-];
 gulp.task('server', function () {
   server.changed(function (error) {
     if (error) {
       console.log('responsive-check server.js restart error: ' + JSON.stringify(error, null, 4));
+    } else {
+      gulpLivereload.changed('/results/default/');
     }
   });
 });
 /*
- * gulp postmortem task to stop server on termination of gulp
+ * gulp postmortem task to stop server on change and on termination of gulp
  */
+watchFilesFor.server = [
+  path.join(appDir, 'server.js')
+];
 gulp.task('server-postMortem', function () {
   return gulp.src(watchFilesFor.server)
     .pipe(postMortem({ gulp: gulp, tasks: ['server:stop'] }))
@@ -173,7 +180,7 @@ watchFilesFor.livereload = [
 gulp.task('livereload', function () {
   gulp.src(watchFilesFor.livereload)
     .pipe(gulpChangedInPlace({ howToDetermineDifference: 'modification-time' }))
-    .pipe(log({ message: 'livereload: <%= file.path %>', title: 'Gulp livereload' }))
+    .pipe(log({ message: 'changed: <%= file.path %>', title: 'Gulp livereload' }))
     .pipe(gulpLivereload({ quiet: true }));
 });
 
@@ -253,6 +260,7 @@ function ipv4adresses() {
   }
   return addresses;
 }
+
 module.exports = {
   gulp: gulp,
   watchFilesFor: watchFilesFor
