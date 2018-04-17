@@ -26,8 +26,6 @@ RUN apt-get update && \
 	apt-get dist-upgrade -y && \
 	apt-get install -y \
 					firefox \
-					graphviz \
-					imagemagick \
 					xvfb && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
@@ -35,11 +33,7 @@ RUN apt-get update && \
 	npm install -g \
 				casperjs \
 				gulp \
-				marked \
-				node-gyp \
-				npm-check-updates \
-				phplint \
-				varstream && \
+				npm-check-updates && \
 	npm install -g git+https://github.com/laurentj/slimerjs.git && \
 	export NODE_TLS_REJECT_UNAUTHORIZED=0 && \
 	npm install && \
