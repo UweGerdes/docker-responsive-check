@@ -53,6 +53,8 @@ $ docker exec -it responsive-check bash
 
 ## CHANGELOG
 
+1.8.5: refactoring other files
+
 1.8.4: refactoring index.js
 
 1.8.3: show running test in layered iframe on page
