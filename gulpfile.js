@@ -193,6 +193,7 @@ gulp.task('build', function (callback) {
     'less',
     // 'lint', // 'test-default' starts 'lint'
     'test-default', // dry run for gulpChangedInPlace
+    'livereload', // dry run for gulpChangedInPlace
     callback);
 });
 
