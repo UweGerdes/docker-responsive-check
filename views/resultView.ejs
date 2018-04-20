@@ -37,7 +37,7 @@
 			<a href="/results/<%= config %>" class="config-link"><%= config %></a>
 		<% }) %>
 		</div>
-		<h2 class="subheadline"><%= config.url %> -&gt; <%= config.selector %></h2>
+		<h2 class="subheadline"><%= config.url %> <%= config.selector %></h2>
 <% config.viewports.forEach(function(viewport) { %>
 		<div class="result">
 <% config.engines.forEach(function(engine) { %>
@@ -45,7 +45,7 @@
 				<div class="result-headline">
 					<%= engine %>, <%= viewport.name %>, <%= viewport.viewport.width %>x<%= viewport.viewport.height %>
 				</div>
-				<div class="result-image" style="max-width: <%= viewport.viewport.width %>px;max-height:<%= viewport.viewport.height %>px;">
+				<div class="result-image" style="width: <%= viewport.viewport.width %>px;max-height:<%= viewport.viewport.height %>px;">
 					<img src="<%= baseDir %>/<%= config.destDir %>/<%= engine %>_<%= viewport.name %>.png" />
 				</div>
 			</div>
