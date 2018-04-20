@@ -1,10 +1,5 @@
 /*
- * Start a HTTP servers for responsive-check
- *
- * node server.js
- *
- * config files in ./config
- * results in ./results
+ * Start a HTTP server for responsive-check
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
