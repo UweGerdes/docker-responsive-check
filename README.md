@@ -34,14 +34,12 @@ $ docker start -ai responsive-check
 $ docker run -it \
 	--name responsive-check-dev \
 	-v $(pwd):/home/node/app \
-	-p 5481:8080 \
-	-p 5482:8081 \
 	uwegerdes/responsive-check bash
 ```
 
 On first start phantomjs is installed (installation in Dockerfile always fails - dunno why) and copied as sudo - enter node password.
 
-Run `gulp`.
+Run `gulp`. Open the responsive-check server url in your browser.
 
 ## Inspect
 
