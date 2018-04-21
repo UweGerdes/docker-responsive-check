@@ -5,11 +5,11 @@
  */
 'use strict';
 
-const autoprefixer = require('gulp-autoprefixer'),
-  glob = require('glob'),
+const glob = require('glob'),
   gulp = require('gulp'),
-  gutil = require('gulp-util'),
+  autoprefixer = require('gulp-autoprefixer'),
   gulpChangedInPlace = require('gulp-changed-in-place'),
+  server = require('gulp-develop-server'),
   gulpExec = require('gulp-exec'),
   jscs = require('gulp-jscs'),
   stylish = require('gulp-jscs-stylish'),
@@ -19,12 +19,10 @@ const autoprefixer = require('gulp-autoprefixer'),
   lesshint = require('gulp-lesshint'),
   gulpLivereload = require('gulp-livereload'),
   notify = require('gulp-notify'),
-  path = require('path'),
   postMortem = require('gulp-postmortem'),
+  path = require('path'),
   os = require('os'),
-  runSequence = require('run-sequence'),
-  server = require('gulp-develop-server'),
-  uglify = require('gulp-uglify')
+  runSequence = require('run-sequence')
   ;
 
 const appDir = __dirname;
@@ -69,7 +67,6 @@ gulp.task('less', function () {
     .on('error', log.onError({ message: 'Error: <%= error.message %>', title: 'LESS Error' }))
     .on('warning', log.onError({ message: 'Warning: <%= error.message %>', title: 'LESS Warning' }))
     .pipe(autoprefixer('last 3 version', 'safari 5', 'ie 8', 'ie 9', 'ios 6', 'android 4'))
-    .pipe(gutil.env.type === 'production' ? uglify() : gutil.noop())
     .pipe(gulp.dest(path.join(appDir, 'css')))
     .pipe(log({ message: 'written: <%= file.path %>', title: 'Gulp less' }))
     ;

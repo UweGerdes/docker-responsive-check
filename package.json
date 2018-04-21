@@ -19,11 +19,6 @@
     "node": ">=8.11.0"
   },
   "devDependencies": {
-    "body-parser": "^1.18.2",
-    "casperjs": "^1.1.4",
-    "del": "^3.0.0",
-    "ejs": "^2.5.7",
-    "express": "^4.16.3",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
@@ -34,17 +29,22 @@
     "gulp-jscs-stylish": "^1.4.0",
     "gulp-jshint": "^2.1.0",
     "gulp-jsonlint": "^1.2.1",
-    "gulp-less": "^3.5.0",
+    "gulp-less": "^4.0.0",
     "gulp-lesshint": "^5.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-notify": "^3.2.0",
     "gulp-postmortem": "^1.0.5",
-    "gulp-uglify": "^3.0.0",
-    "gulp-util": "^3.0.8",
     "jshint": "^2.9.5",
-    "make-dir": "^1.2.0",
-    "morgan": "^1.9.0",
     "run-sequence": "^2.2.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "casperjs": "^1.1.4",
+    "del": "^3.0.0",
+    "ejs": "^2.5.7",
+    "express": "^4.16.3",
+    "make-dir": "^1.2.0",
+    "morgan": "^1.9.0"
   },
   "repository": {
     "type": "git",
