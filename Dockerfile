@@ -29,11 +29,9 @@ RUN apt-get update && \
 					xvfb && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
-	npm -g config set user ${USER_NAME} && \
 	npm install -g \
 				casperjs \
-				gulp \
-				npm-check-updates && \
+				gulp && \
 	npm install -g git+https://github.com/laurentj/slimerjs.git && \
 	export NODE_TLS_REJECT_UNAUTHORIZED=0 && \
 	npm install && \
