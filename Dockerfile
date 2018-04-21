@@ -3,7 +3,7 @@
 #
 # docker build -t uwegerdes/responsive-check .
 
-FROM uwegerdes/nodejs:8.x
+FROM uwegerdes/nodejs
 
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
