@@ -12,14 +12,13 @@ const glob = require('glob'),
   server = require('gulp-develop-server'),
   gulpExec = require('gulp-exec'),
   jscs = require('gulp-jscs'),
-  stylish = require('gulp-jscs-stylish'),
+  jscsStylish = require('gulp-jscs-stylish'),
   jshint = require('gulp-jshint'),
   jsonlint = require('gulp-jsonlint'),
   less = require('gulp-less'),
   lesshint = require('gulp-lesshint'),
   gulpLivereload = require('gulp-livereload'),
   notify = require('gulp-notify'),
-  postMortem = require('gulp-postmortem'),
   path = require('path'),
   os = require('os'),
   runSequence = require('run-sequence')
@@ -97,7 +96,7 @@ gulp.task('lint', function () {
   return gulp.src(watchFilesFor.lint)
     .pipe(jshint())
     .pipe(jscs())
-    .pipe(stylish.combineWithHintResults())
+    .pipe(jscsStylish.combineWithHintResults())
     .pipe(jshint.reporter('jshint-stylish'))
     ;
 });
@@ -146,6 +145,12 @@ gulp.task('server:start', function () {
 gulp.task('server:stop', function () {
   server.kill();
 });
+/*
+ * gulp postmortem task to stop server on change and on termination of gulp
+ */
+watchFilesFor.server = [
+  path.join(appDir, 'server.js')
+];
 gulp.task('server', function () {
   server.changed(function (error) {
     if (error) {
@@ -154,17 +159,6 @@ gulp.task('server', function () {
       gulpLivereload.changed('/results/default/');
     }
   });
-});
-/*
- * gulp postmortem task to stop server on change and on termination of gulp
- */
-watchFilesFor.server = [
-  path.join(appDir, 'server.js')
-];
-gulp.task('server-postMortem', function () {
-  return gulp.src(watchFilesFor.server)
-    .pipe(postMortem({ gulp: gulp, tasks: ['server:stop'] }))
-    ;
 });
 
 /*
@@ -222,7 +216,6 @@ gulp.task('watch', function () {
 gulp.task('init', function (callback) {
   runSequence('less',
     'server:start',
-    'server-postMortem',
     callback);
 });
 
@@ -233,7 +226,6 @@ gulp.task('default', function (callback) {
   runSequence('build',
     'server:start',
     'watch',
-    'server-postMortem',
     callback);
 });
 
