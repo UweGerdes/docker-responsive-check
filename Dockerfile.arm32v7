@@ -52,8 +52,6 @@ COPY entrypoint.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-RUN chown -R ${USER_NAME}:${USER_NAME} ${APP_HOME}
-
 WORKDIR ${APP_HOME}
 
 USER ${USER_NAME}
