@@ -1,7 +1,7 @@
 {
   "name": "responsive-check",
   "description": "Gulp and other packages for frontend testing: responsive-check",
-  "version": "1.8.5",
+  "version": "1.8.6",
   "keywords": [
     "gulp",
     "frontend",
@@ -33,7 +33,6 @@
     "gulp-lesshint": "^5.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-notify": "^3.2.0",
-    "gulp-postmortem": "^1.0.5",
     "jshint": "^2.9.5",
     "run-sequence": "^2.2.1"
   },

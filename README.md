@@ -51,6 +51,8 @@ $ docker exec -it responsive-check bash
 
 ## CHANGELOG
 
+1.8.6: use firefox-esr and slimerjs v0.10
+
 1.8.5: refactoring other files
 
 1.8.4: refactoring index.js
