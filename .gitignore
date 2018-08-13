@@ -1,3 +1,5 @@
 # gitignore for responsive-check
 css
 results
+build/phantomjs
+

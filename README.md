@@ -49,6 +49,16 @@ To connect to a running container use:
 $ docker exec -it responsive-check bash
 ```
 
+## Use on Raspberry Pi 3
+
+I've tried to use this docker on my Raspberry Pi 3 with `uwegerdes/docker-baseimage-arm32v7` and `uwegerdes/docker-nodejs` (checkout and build them before building this Dockerfile).
+
+Sadly there is no arm32v7 version of Phantomjs. Use `uwegerdes/docker-build-phantomjs-arm32v7` to create the phantomjs bin. It must be copied to `./build/phantomjs/bin/phantomjs` before building with:
+
+```bash
+$ docker build -t uwegerdes/responsive-check -f Dockerfile.arm32v7 .
+```
+
 ## CHANGELOG
 
 1.8.6: use firefox-esr and slimerjs v0.10
