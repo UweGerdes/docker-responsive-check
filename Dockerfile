@@ -31,7 +31,8 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/* && \
 	npm install -g \
 				casperjs \
-				gulp && \
+				gulp \
+				nodemon && \
 	npm install -g git+https://github.com/laurentj/slimerjs.git#v0.10 && \
 	export NODE_TLS_REJECT_UNAUTHORIZED=0 && \
 	npm install && \

@@ -1,7 +1,7 @@
 {
   "name": "responsive-check",
   "description": "Gulp and other packages for frontend testing: responsive-check",
-  "version": "1.8.6",
+  "version": "1.8.7",
   "keywords": [
     "gulp",
     "frontend",
@@ -50,6 +50,9 @@
     "url": "https://github.com/uwegerdes/docker-responsive-check"
   },
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "dev": "nodemon --watch gulpfile.js --delay 1 --exec gulp",
+    "dev-quiet": "nodemon --watch gulpfile.js --quiet --exitcrash --delay 1 --exec gulp",
+    "test": "gulp responsive-check-selftest"
   }
 }

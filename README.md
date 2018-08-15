@@ -63,6 +63,8 @@ $ docker build -t uwegerdes/responsive-check -f Dockerfile.arm32v7 .
 
 ## CHANGELOG
 
+1.8.7: more refactoring: gulpfile.js/nodemon
+
 1.8.6: use firefox-esr and slimerjs v0.10
 
 1.8.5: refactoring other files
