@@ -2,7 +2,7 @@
 
 Make screenshots for different device viewports and see them on one page with the server.
 
-The example configs tests the built in server index.html. You find usage info there
+The example configs tests the built-in server index.html. You find usage info there.
 
 ## Run gulp docker image
 
@@ -34,6 +34,8 @@ $ docker start -ai responsive-check
 $ docker run -it \
 	--name responsive-check-dev \
 	-v $(pwd):/home/node/app \
+	-p 5383:8080 \
+	-p 5384:8081 \
 	uwegerdes/responsive-check bash
 ```
 
