@@ -1,0 +1,70 @@
+#
+#  Configuration for responsive-check
+#
+
+gulp:
+  watch:
+    jsdoc:
+      - '*.js'
+      - 'gulp/**/*.js'
+      - 'lib/**/*.js'
+      - 'js/**/*.js'
+    jshint:
+      - '*.js'
+      - 'gulp/**/*.js'
+      - 'lib/**/*.js'
+      - 'js/**/*.js'
+    jsonlint:
+      - '**/*.json'
+      - '.jscsrc'
+      - '.jshintrc'
+      - '.lesshintrc'
+    lesshint:
+      - 'less/**/*.less'
+    yamllint:
+      - '**/*.yaml'
+      - '**/*.yml'
+    ejslint:
+      - 'views/**/*.ejs'
+    less:
+      - 'less/**/*.less'
+    puglint:
+      - '**/*.pug'
+    test-responsive-check-default:
+      - 'config/default.js'
+      - 'htdocs/index.html'
+      - 'htdocs/css/app.css'
+      - 'htdocs/js/**/*.js'
+      - 'index.js'
+    server-restart:
+      - 'server.js'
+    livereload:
+      - 'htdocs/css/app.css'
+      - 'views/**/*.ejs'
+  tests:
+    vcards:
+      - 'modules/vcards/tests/server/*.js'
+      - 'modules/vcards/tests/model/*.js'
+  build:
+    jsdoc:
+      src:
+        - '*.js'
+        - 'gulp/**/*.js'
+        - 'js/**/*.js'
+        - 'lib/**/*.js'
+      dest: 'docs/jsdoc'
+    js:
+      src: 'js/*.js'
+      dest: 'htdocs/js'
+      replace:
+        '/js': ''
+    less:
+      src: 'less/app.less'
+      dest: 'htdocs/css'
+
+server:
+  server: ./server.js
+  docroot: ./htdocs
+  httpPort: 8080
+  livereloadPort: 8081
+  verbose: false

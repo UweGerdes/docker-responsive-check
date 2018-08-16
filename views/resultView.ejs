@@ -54,8 +54,15 @@
 <% }) %>
 	</div>
 	<div id="output" class="layer"></div>
-<% if (typeof gulpLivereloadPort != "undefined") { %>
-	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':<%= gulpLivereloadPort %>/livereload.js"></' + 'script>')</script>
+<% if (typeof gulpLivereloadPort !== "undefined") { %>
+	<script language="JavaScript">
+		var host = location.host.split(':');
+		if (host.length === 2) {
+			var script = document.createElement('script');
+			script.setAttribute('src', 'http://' + host[0] + ':' + (parseInt(host[1]) + 1) + '/livereload.js');
+			document.body.appendChild(script);
+		}
+	</script>
 <% } %>
 	<br />
 </body>

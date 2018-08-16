@@ -27,23 +27,33 @@
     "gulp-exec": "^3.0.1",
     "gulp-jscs": "^4.1.0",
     "gulp-jscs-stylish": "^1.4.0",
+    "gulp-jsdoc3": "^2.0.0",
     "gulp-jshint": "^2.1.0",
     "gulp-jsonlint": "^1.2.1",
     "gulp-less": "^3.5.0",
     "gulp-lesshint": "^5.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-notify": "^3.2.0",
+    "gulp-pug-linter": "^0.5.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sequence": "^1.0.0",
+    "gulp-yaml-validate": "^1.0.2",
     "jshint": "^2.9.5",
-    "run-sequence": "^2.2.1"
+    "less-plugin-glob": "^2.0.2",
+    "stream-combiner2": "^1.1.1"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
-    "casperjs": "^1.1.4",
+    "chalk": "^2.3.2",
+    "dateformat": "^3.0.3",
     "del": "^3.0.0",
     "ejs": "^2.5.7",
     "express": "^4.16.3",
+    "express-validator": "^5.2.0",
+    "js-yaml": "^3.11.0",
     "make-dir": "^1.2.0",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "pug": "^2.0.3"
   },
   "repository": {
     "type": "git",
@@ -51,7 +61,7 @@
   },
   "scripts": {
     "start": "gulp",
-    "dev": "nodemon --watch gulpfile.js --delay 1 --exec gulp",
+    "dev": "nodemon --watch gulpfile.js --watch configuration.yaml --watch 'gulp/*.js' --delay 1 --exec gulp",
     "dev-quiet": "nodemon --watch gulpfile.js --quiet --exitcrash --delay 1 --exec gulp",
     "test": "gulp responsive-check-selftest"
   }

@@ -1,5 +1,6 @@
 # gitignore for responsive-check
-css
+docs
+htdocs/css
+htdocs/js
 results
 build/phantomjs
-

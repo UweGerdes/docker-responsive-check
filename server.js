@@ -44,9 +44,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'htdocs')));
 
-// Handle form post requests for result view
+// Route for results images
+app.get('/results/:config/:image', function (req, res) {
+  res.sendFile(path.join(__dirname, 'results', req.params.config, req.params.image));
+});
+
+// Handle requests for result view
 app.get('/results/:config', function (req, res) {
   let config = {};
   if (req.params.config) {

@@ -38,7 +38,7 @@ makeDir(destDir)
 function loadPage(data) {
   const pageKey = data.engine + '_' + data.viewport.name;
   const dest = path.join(destDir, pageKey);
-  const args = ['./bin/load-page.js',
+  const args = ['./lib/load-page.js',
     '--url="' + data.config.url + '"',
     '--selector="' + data.config.selector + '"',
     '--dest="' + dest + '"',
