@@ -23,6 +23,7 @@ RUN apt-get update && \
 	apt-get dist-upgrade -y && \
 	apt-get install -y \
 					software-properties-common \
+					ttf-mscorefonts-installer \
 					xvfb && \
 	add-apt-repository -y ppa:mozillateam/ppa && \
 	apt-get update && \
