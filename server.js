@@ -10,6 +10,7 @@ const bodyParser = require('body-parser'),
   express = require('express'),
   fs = require('fs'),
   glob = require('glob'),
+  makeDir = require('make-dir'),
   logger = require('morgan'),
   os = require('os'),
   path = require('path'),
@@ -84,8 +85,8 @@ app.get(/^\/(config\/.+)$/, (req, res) => {
 });
 
 // Handle AJAX requests for run configs
-app.get('/start/:config', function (req, res) {
-  runConfig(req.params.config, res);
+app.get(/^\/start\/(.+)$/, function (req, res) {
+  runConfig(req.params[0], res);
 });
 
 // Route for root dir
@@ -161,7 +162,7 @@ function runConfig(config, res) {
     res.write(replaceAnsiColors(msg).replace(/\n/, '<br />\n') + '<br />\n');
   };
   if (!fs.existsSync(destDir)) {
-    fs.mkdirSync(destDir);
+    makeDir(destDir);
   }
   res.write('<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8" />\n<title>' + config +
     '</title>\n<link href="/css/app.css" rel="stylesheet" />\n</head>\n<body>\n<div ' +
