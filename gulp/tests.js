@@ -5,10 +5,12 @@
  */
 'use strict';
 
-const gulp = require('gulp'),
+const exec = require('child_process').exec,
+  gulp = require('gulp'),
   gulpExec = require('gulp-exec'),
   notify = require('gulp-notify'),
   sequence = require('gulp-sequence'),
+  path = require('path'),
   config = require('../lib/config'),
   filePromises = require('./lib/files-promises'),
   loadTasks = require('./lib/load-tasks')
@@ -97,8 +99,8 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'test-responsive-check-exec': (callback) => {
-    Promise.all(config.gulp.tests.vcards.map(filePromises.getFilenames))
+  'test-responsive-check-exec2': (callback) => {
+    Promise.all(config.gulp['test-responsive-check'].map(filePromises.getFilenames))
     .then((filenames) => [].concat(...filenames)) // jscs:ignore jsDoc
     .then(filePromises.getRecentFiles)
     .then((filenames) => { // jscs:ignore jsDoc
@@ -117,6 +119,54 @@ const tasks = {
     .catch(err => console.log(err)) // jscs:ignore jsDoc
     ;
   },
+
+  /**
+   * ### test-responsive-check-exec test task
+   *
+   * @task test-e2e-workflow-modules-exec
+   * @namespace tasks
+   * @param {function} callback - gulp callback
+   */
+  'test-responsive-check-exec': (callback) => {
+    Promise.all(config.gulp['test-responsive-check'].map(filePromises.getFilenames))
+    .then((filenames) => [].concat(...filenames)) // jscs:ignore jsDoc
+    .then(filePromises.getRecentFiles)
+    .then((filenames) => Promise.all(
+        filenames.map(runModule)
+      )
+    )
+    .then(() => { callback();});
+  }
+};
+
+/**
+ * start module test
+ *
+ * @param {array} files - list with glob paths
+ */
+const runModule = (filename) => {
+  console.log(filename.replace(/.*config\//, ''));
+  return new Promise((resolve, reject) => {
+    const loader = exec('export FORCE_COLOR=1; ' +
+      'node index.js ' + filename.replace(/.*config\//, ''),
+      { cwd: path.join(__dirname, '..') });
+    loader.stdout.on('data', (data) => {
+      console.log(data.toString().trim());
+    });
+    loader.stderr.on('data', (data) => {
+      console.log('stderr: ' + data.toString().trim());
+    });
+    loader.on('error', (err) => {
+      console.log('error: ' + err.toString().trim());
+    });
+    loader.on('close', (code) => {
+      if (code > 0) {
+        console.log('test-e2e-workflow-default exit-code: ' + code);
+        reject();
+      }
+      resolve();
+    });
+  });
 };
 
 if (process.env.NODE_ENV == 'development') {

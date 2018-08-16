@@ -9,9 +9,11 @@ const bodyParser = require('body-parser'),
   exec = require('child_process').exec,
   express = require('express'),
   fs = require('fs'),
+  glob = require('glob'),
   logger = require('morgan'),
   os = require('os'),
-  path = require('path');
+  path = require('path'),
+  config = require('./lib/config');
 
 const app = express();
 
@@ -27,6 +29,7 @@ const baseDir = '/results',
 const running = [];
 
 const configs = getConfigs();
+const configs2 = getConfigs2();
 
 const addresses = ipv4adresses();
 
@@ -46,31 +49,37 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files
 app.use(express.static(path.join(__dirname, 'htdocs')));
 
-// Route for results images
-app.get('/results/:config/:image', function (req, res) {
-  res.sendFile(path.join(__dirname, 'results', req.params.config, req.params.image));
+/**
+ * Route for results
+ *
+ * @param {Object} req - request
+ * @param {Object} res - response
+ */
+app.get(/^(\/results\/.+)$/, (req, res) => {
+  res.sendFile(path.join(__dirname, req.params[0]));
 });
 
 // Handle requests for result view
-app.get('/results/:config', function (req, res) {
-  let config = {};
-  if (req.params.config) {
-    const configFilename = path.join(configDir, req.params.config + '.js');
-    if (fs.existsSync(configFilename)) {
-      config = require(configFilename);
-      res.render('resultView.ejs', {
-        configs: configs,
-        configName: req.params.config,
-        config: config,
-        httpPort: httpPort,
-        gulpLivereloadPort: gulpLivereloadPort,
-        baseDir: baseDir
-      });
-    } else {
-      config.error = 'config file not found: ' + configFilename;
-      res.status(404)
-        .send('config file not found: ' + configFilename);
+app.get(/^\/(config\/.+)$/, (req, res) => {
+  const configFilename = req.params[0].replace(/config\//, '');
+  const config = requireFile(req.params[0] + '.js');
+  try {
+    res.render('resultView.ejs', {
+      configs: configs,
+      configs2: configs2,
+      configName: configFilename,
+      config: config,
+      httpPort: httpPort,
+      gulpLivereloadPort: gulpLivereloadPort,
+      baseDir: baseDir
+    });
+  } catch (e) {
+    if (false) {
+      console.log(e);
     }
+    config.error = 'config file not found: ' + configFilename;
+    res.status(404)
+      .send('config file not found: ' + configFilename);
   }
 });
 
@@ -121,6 +130,19 @@ function getConfigs() {
     const configName = fileName.replace(/\.js/, '');
     configs.push(configName);
   });
+  return configs;
+}
+
+/**
+ * get configuration files and labels
+ */
+function getConfigs2() {
+  let configs = {};
+  Object.entries(config.gulp['test-responsive-check']).forEach(
+    ([label, path]) => {
+      configs[label] = glob.sync(path);
+    }
+  );
   return configs;
 }
 
@@ -208,4 +230,19 @@ function replaceAnsiColors(string) {
     }
   });
   return result;
+}
+
+/**
+ * get js file content
+ *
+ * @private
+ * @param {String} filename - config filename
+ */
+function requireFile(filename) {
+  delete require.cache[require.resolve('./' + filename)];
+  if (fs.existsSync('./' + filename)) {
+    return require('./' + filename);
+  } else {
+    console.log('server require ./' + filename + ' not found');
+  }
 }

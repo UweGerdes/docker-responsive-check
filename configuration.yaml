@@ -36,15 +36,16 @@ gulp:
       - 'htdocs/css/app.css'
       - 'htdocs/js/**/*.js'
       - 'index.js'
+    test-responsive-check:
+      - 'config/modules/**/tests/responsive-check/*'
     server-restart:
       - 'server.js'
     livereload:
+      - 'htdocs/index.html'
       - 'htdocs/css/app.css'
       - 'views/**/*.ejs'
-  tests:
-    vcards:
-      - 'modules/vcards/tests/server/*.js'
-      - 'modules/vcards/tests/model/*.js'
+  test-responsive-check:
+    - 'config/modules/**/tests/responsive-check/*.js'
   build:
     jsdoc:
       src:

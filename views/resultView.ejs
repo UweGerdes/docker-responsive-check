@@ -34,7 +34,7 @@
 		<h1 class="headline">Responsive Check: <%= configName %> <a href="javascript:run('/start/<%= configName %>');">restart</a></h1>
 		<div class="configs">Select config:
 		<% configs.forEach(function(config) { %>
-			<a href="/results/<%= config %>" class="config-link"><%= config %></a>
+			<a href="/config/<%= config %>" class="config-link"><%= config %></a>
 		<% }) %>
 		</div>
 		<h2 class="subheadline"><%= config.url %> <%= config.selector %></h2>
@@ -54,7 +54,6 @@
 <% }) %>
 	</div>
 	<div id="output" class="layer"></div>
-<% if (typeof gulpLivereloadPort !== "undefined") { %>
 	<script language="JavaScript">
 		var host = location.host.split(':');
 		if (host.length === 2) {
@@ -63,7 +62,6 @@
 			document.body.appendChild(script);
 		}
 	</script>
-<% } %>
 	<br />
 </body>
 </html>
