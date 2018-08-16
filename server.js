@@ -127,8 +127,10 @@ console.log('responsive-check server listening on http://' + addresses[0] + ':' 
 function getConfigs() {
   const configs = [];
   fs.readdirSync(configDir).forEach(function (fileName) {
-    const configName = fileName.replace(/\.js/, '');
-    configs.push(configName);
+    if (fileName.indexOf('.js') > 0) {
+      const configName = fileName.replace(/\.js/, '');
+      configs.push(configName);
+    }
   });
   return configs;
 }
@@ -138,9 +140,12 @@ function getConfigs() {
  */
 function getConfigs2() {
   let configs = {};
-  Object.entries(config.gulp['test-responsive-check']).forEach(
-    ([label, path]) => {
-      configs[label] = glob.sync(path);
+  config.gulp['test-responsive-check'].forEach(
+    (path) => {
+      console.log(path);
+      const paths = glob.sync(path);
+      const label = paths[0].replace(/.+modules\/([^/]+).+/, '$1');
+      configs[label] = paths.map((path) => path.replace(/.+\/([^/]+)\.js/, '$1'));
     }
   );
   return configs;

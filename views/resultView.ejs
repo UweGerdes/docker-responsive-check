@@ -35,6 +35,12 @@
 		<div class="configs">Select config:
 		<% configs.forEach(function(config) { %>
 			<a href="/config/<%= config %>" class="config-link"><%= config %></a>
+		<% }) %><br />
+		<% Object.keys(configs2).forEach(function(module) { %>
+			<%= module %>:
+			<% configs2[module].forEach(function(config) { %>
+				<a href="/config/modules/<%= module %>/tests/responsive-check/<%= config %>" class="config-link"><%= config %></a>
+			<% }) %>
 		<% }) %>
 		</div>
 		<h2 class="subheadline"><%= config.url %> <%= config.selector %></h2>
