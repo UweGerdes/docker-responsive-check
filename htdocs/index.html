@@ -28,7 +28,7 @@
 
 			<h2>Aufbau der Script-Dateien</h2>
 			<p>Script-Dateien sollten im Verzeichnis config gespeichert werden. Die Syntax ist JavaScript, es muss eine Datenstruktur über module.export gesetzt werden.</p>
-			<p>Das Beispielscript default.js vergleicht das form-Element von google.de - allerdings vergleicht es die beiden Browsertypen Webkit (phantomjs) und Firefox (slimerjs) - es ist also mit Unterschieden zu rechnen.</p>
+			<p>Das Beispielscript default.js lädt http://webserver/page.html mit Webkit (phantomjs) und Firefox (slimerjs) und erstellt Screenshots von div[id="header"] in den verschiedenen Viewports.</p>
 			<pre class="editor">
 var slimerjs = 'slimerjs';
 var phantomjs = 'phantomjs';
