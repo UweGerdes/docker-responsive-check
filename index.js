@@ -8,37 +8,43 @@
 'use strict';
 
 const exec = require('child_process').exec,
-  del = require('del'),
-  makeDir = require('make-dir'),
+  del = require('del'), // jshint ignore:line
+  makeDir = require('make-dir'), // jshint ignore:line
   path = require('path'),
   conf = require('./lib/config');
 
 const configDir = './config',
   resultsDir = './results',
   configFile = process.argv[2] || 'default.js',
-  config = require(configDir + '/' + configFile),
+  config = require(configDir + '/' + configFile), // jshint ignore:line
   destDir = path.join(resultsDir, configFile.replace(/\.js$/, ''));
 
 const timeout = 40000;
 
 const verbose = conf.server.verbose;
 
-makeDir(destDir)
-  .then(del([path.join(destDir, '*.*')]))
-  .then(() => {
-    let data = [];
-    config.engines.forEach((engine) => {
-      config.viewports.forEach((viewport) => {
-        data.push({ config: config, engine: engine, viewport: viewport });
-      });
+// - jshint 2.9.x does not support async/await
+/* jshint ignore:start */
+(async () => {
+  let data = [];
+  config.engines.forEach((engine) => {
+    config.viewports.forEach((viewport) => {
+      data.push({ config: config, engine: engine, viewport: viewport });
     });
-    return Promise.all(data.map(loadPage));
-  })
-  .catch((error) => {
-    console.log('error: ', error);
   });
+  try {
+    await makeDir(destDir);
+    await del([path.join(destDir, '*.*')]);
+    data.forEach(async (entry) => {
+      await loadPage(entry);
+    });
+  } catch (error) {
+    console.log('error: ', error);
+  }
+})();
+/* jshint ignore:end */
 
-function loadPage(data) {
+function loadPage(data) { // jshint ignore:line
   const pageKey = data.engine + '_' + data.viewport.name;
   const dest = path.join(destDir, pageKey);
   const args = ['./lib/load-page.js',
