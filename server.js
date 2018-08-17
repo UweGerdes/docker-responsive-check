@@ -21,7 +21,7 @@ const app = express();
 const httpPort = process.env.RESPONSIVE_CHECK_HTTP || 8080,
   gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081;
 
-const verbose = (process.env.VERBOSE == 'true');
+const verbose = config.server.verbose;
 
 const baseDir = '/results',
   configDir = path.join(__dirname, 'config'),

@@ -10,15 +10,18 @@
 const exec = require('child_process').exec,
   del = require('del'),
   makeDir = require('make-dir'),
-  path = require('path');
+  path = require('path'),
+  conf = require('./lib/config');
 
 const configDir = './config',
   resultsDir = './results',
   configFile = process.argv[2] || 'default.js',
   config = require(configDir + '/' + configFile),
-  destDir = path.join(resultsDir, config.destDir);
+  destDir = path.join(resultsDir, configFile.replace(/\.js$/, ''));
 
 const timeout = 40000;
+
+const verbose = conf.server.verbose;
 
 makeDir(destDir)
   .then(del([path.join(destDir, '*.*')]))
@@ -42,7 +45,6 @@ function loadPage(data) {
     '--url="' + data.config.url + '"',
     '--selector="' + data.config.selector + '"',
     '--dest="' + dest + '"',
-    '--engine="' + data.engine + '"',
     '--width="' + data.viewport.viewport.width + '"'];
   let cmd = 'casperjs';
   if (data.engine === 'slimerjs') {
@@ -51,11 +53,7 @@ function loadPage(data) {
     //			cmd = 'casperjs';
   }
   return new Promise((resolve, reject) => {
-    console.log('starting: ' +
-      data.config.url + ' ' +
-      data.config.selector + ' with ' +
-      data.engine + ' ' +
-      data.viewport.name);
+    console.log('starting:', data.engine, data.viewport.name, args.join(' '));
     const loader = exec(cmd + ' ' + args.join(' '),
       { timeout: timeout },
       (error) => {
@@ -84,7 +82,9 @@ function loadPage(data) {
       }
     );
     loader.stdout.on('data', (data) => {
-      console.log(pageKey + ': ' + data.trim());
+      if (verbose) {
+        console.log(pageKey + ': ' + data.trim());
+      }
     });
     loader.stderr.on('data', (data) => {
       console.log(pageKey + ' stderr: ' + data.trim());

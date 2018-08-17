@@ -8,11 +8,13 @@ The example configs tests the built-in server index.html. You find usage info th
 
 Run a container from the image `uwegerdes/responsive-check` and connect to your environment (with the localhost ports of responsive-check on 5381, gulp livereload on 5382 and a running webserver docker container, the hostname `webserver` is used in test configs).
 
+The config files are searched in all subdirectories where the path matches `modules/**/tests/responsive-check/*.js`.
+
 ```bash
 $ docker build -t uwegerdes/responsive-check .
 $ docker run -it \
 	--name responsive-check \
-	-v $(pwd)/config:/home/node/app/config \
+	-v $(pwd)/modules:/home/node/app/config/modules \
 	-p 5381:8080 \
 	-p 5382:8081 \
 	uwegerdes/responsive-check

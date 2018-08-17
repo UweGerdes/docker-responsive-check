@@ -16,7 +16,6 @@ const viewport.userAgent.phantomjs = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKi
  */
 
 module.exports = {
-  destDir: 'default',
   url: 'http://' + server + '/index.html',
   selector: '.console',
   engines: ['phantomjs', 'slimerjs'],
