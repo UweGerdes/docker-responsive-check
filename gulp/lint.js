@@ -5,6 +5,7 @@
 
 const gulp = require('gulp'),
   changedInPlace = require('gulp-changed-in-place'),
+  eslint = require('gulp-eslint'),
   jscs = require('gulp-jscs'),
   jscsStylish = require('gulp-jscs-stylish'),
   gulpJshint = require('gulp-jshint'),
@@ -52,6 +53,31 @@ const tasks = {
   /**
    * #### Lint js files
    *
+   * apply eslint to js files
+   *
+   * @task eslint
+   * @namespace tasks
+   */
+  'eslint': () => gulp.src(config.gulp.watch.eslint)
+      //.pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp eslint' }))
+      .pipe(eslint({
+        rules: {
+          camelcase: 1,
+          'comma-dangle': 2,
+          quotes: 0
+        },
+        envs: [
+        'node'
+        ],
+        parserOptions: {
+          ecmaVersion: 2017
+        }
+      }))
+      .pipe(eslint.format())
+      .pipe(eslint.failAfterError()),
+  /**
+   * #### Lint js files
+   *
    * apply jshint and jscs to js files
    *
    * @task jshint
@@ -59,7 +85,7 @@ const tasks = {
    */
   'jshint': () => gulp.src(config.gulp.watch.jshint)
       .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
-      .pipe(log({ message: 'linted: <%= file.path %>', title: 'Gulp jshint' }))
+      .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jshint' }))
       .pipe(gulpJshint())
       .pipe(jscs())
       .pipe(jscsStylish.combineWithHintResults())

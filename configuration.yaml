@@ -4,13 +4,15 @@
 
 gulp:
   watch:
+    eslint:
+      - 'index.js'
     jsdoc:
       - '*.js'
       - 'gulp/**/*.js'
       - 'lib/**/*.js'
       - 'js/**/*.js'
     jshint:
-      - '*.js'
+      - 'gulpfile.js'
       - 'gulp/**/*.js'
       - 'lib/**/*.js'
       - 'js/**/*.js'

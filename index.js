@@ -8,23 +8,21 @@
 'use strict';
 
 const exec = require('child_process').exec,
-  del = require('del'), // jshint ignore:line
-  makeDir = require('make-dir'), // jshint ignore:line
+  del = require('del'),
+  makeDir = require('make-dir'),
   path = require('path'),
   conf = require('./lib/config');
 
 const configDir = './config',
   resultsDir = './results',
   configFile = process.argv[2] || 'default.js',
-  config = require(configDir + '/' + configFile), // jshint ignore:line
+  config = require(configDir + '/' + configFile),
   destDir = path.join(resultsDir, configFile.replace(/\.js$/, ''));
 
 const timeout = 40000;
 
 const verbose = conf.server.verbose;
 
-// - jshint 2.9.x does not support async/await
-/* jshint ignore:start */
 (async () => {
   let data = [];
   config.engines.forEach((engine) => {
@@ -42,9 +40,8 @@ const verbose = conf.server.verbose;
     console.log('error: ', error);
   }
 })();
-/* jshint ignore:end */
 
-function loadPage(data) { // jshint ignore:line
+function loadPage(data) {
   const pageKey = data.engine + '_' + data.viewport.name;
   const dest = path.join(destDir, pageKey);
   const args = ['./lib/load-page.js',
