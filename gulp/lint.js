@@ -4,6 +4,7 @@
 'use strict';
 
 const gulp = require('gulp'),
+  cache = require('gulp-cached'),
   changedInPlace = require('gulp-changed-in-place'),
   //eslint = require('gulp-eslint'),
   jscs = require('gulp-jscs'),
@@ -87,7 +88,7 @@ const tasks = {
    * @namespace tasks
    */
   'jsstandard': () => gulp.src(config.gulp.watch.jsstandard)
-      .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
+      .pipe(cache('jsstandard'))
       .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
       .pipe(standard())
       .pipe(standard.reporter('default', {
