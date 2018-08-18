@@ -8,13 +8,8 @@ gulp:
       - '*.js'
       - 'gulp/**/*.js'
       - 'lib/**/*.js'
-      - 'js/**/*.js'
-    jshint:
-      - 'js/**/*.js'
     jsonlint:
       - '**/*.json'
-      - '.jscsrc'
-      - '.jshintrc'
       - '.lesshintrc'
     jsstandard:
       - '*.js'

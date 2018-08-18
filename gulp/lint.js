@@ -5,11 +5,6 @@
 
 const gulp = require('gulp')
 const cache = require('gulp-cached')
-const changedInPlace = require('gulp-changed-in-place')
-// const eslint = require('gulp-eslint')
-const jscs = require('gulp-jscs')
-const jscsStylish = require('gulp-jscs-stylish')
-const gulpJshint = require('gulp-jshint')
 const jsonlint = require('gulp-jsonlint')
 const lesshint = require('gulp-lesshint')
 const notify = require('gulp-notify')
@@ -42,7 +37,6 @@ const tasks = {
    */
   'lint': (callback) => {
     sequence(
-      'jshint',
       'jsonlint',
       'jsstandard',
       'lesshint',
@@ -55,63 +49,19 @@ const tasks = {
   /**
    * #### Lint js files
    *
-   * apply eslint to js files
-   *
-   * @task eslint
-   * @namespace tasks
-   */
-  /*
-  'eslint': () => gulp.src(config.gulp.watch.eslint)
-      //.pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp eslint' }))
-      .pipe(eslint({
-        rules: {
-          camelcase: 1,
-          'comma-dangle': 2,
-          quotes: 0
-        },
-        envs: [
-        'node'
-        ],
-        parserOptions: {
-          ecmaVersion: 2017
-        }
-      }))
-      .pipe(eslint.format())
-      .pipe(eslint.failAfterError()),
-  */
-  /**
-   * #### Lint js files
-   *
    * apply jsstandard to js files
    *
-   * @task jshint
+   * @task jsstandard
    * @namespace tasks
    */
   'jsstandard': () => gulp.src(config.gulp.watch.jsstandard)
     .pipe(cache('jsstandard'))
-    .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
+    // .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
     .pipe(standard())
     .pipe(standard.reporter('default', {
       breakOnError: false,
       quiet: true
     })),
-  /**
-   * #### Lint js files
-   *
-   * apply jshint and jscs to js files
-   *
-   * @task jshint
-   * @namespace tasks
-   */
-  'jshint': () => gulp.src(config.gulp.watch.jshint)
-    .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
-    .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jshint' }))
-    .pipe(gulpJshint())
-    .pipe(jscs())
-    .pipe(jscsStylish.combineWithHintResults())
-    .pipe(gulpJshint.reporter('default'))
-    // .pipe(gulpJshint.reporter('jshint-stylish'))
-    .pipe(gulpJshint.reporter('fail')),
   /**
    * #### Lint json files
    *
@@ -284,5 +234,5 @@ const report = (file) =>
 if (process.env.NODE_ENV === 'development') {
   loadTasks.importTasks(tasks)
 } else {
-  loadTasks.importTasks({ jshint: () => { } })
+  loadTasks.importTasks({ jsstandard: () => { } })
 }

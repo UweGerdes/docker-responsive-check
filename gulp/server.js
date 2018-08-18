@@ -22,7 +22,7 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'server-restart': [['jshint'], (callback) => {
+  'server-restart': [['jsstandard'], (callback) => {
     if (process.env.NODE_ENV === 'development') {
       sequence(
         'server-changed',
