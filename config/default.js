@@ -2,7 +2,7 @@
  * default configuration for responsive-check
  */
 
-const server = 'localhost:8080';
+const server = 'localhost:8080'
 /*
  * TODO:
 const resultStyles = 'body{background-color:#666666}';
@@ -29,4 +29,4 @@ module.exports = {
       'viewport': { width: 1280, height: 1024 }
     }
   ]
-};
+}

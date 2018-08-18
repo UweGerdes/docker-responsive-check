@@ -59,7 +59,7 @@ const tasks = {
     // .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
     .pipe(standard())
     .pipe(standard.reporter('default', {
-      breakOnError: false,
+      breakOnError: true,
       quiet: true
     })),
   /**

@@ -13,6 +13,8 @@ gulp:
       - '.lesshintrc'
     jsstandard:
       - '*.js'
+      - 'config/*.js'
+      - 'config/modules/**/tests/responsive-check/*.js'
       - 'gulp/**/*.js'
       - 'lib/**/*.js'
     lesshint:

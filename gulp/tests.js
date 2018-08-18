@@ -82,13 +82,13 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'test-responsive-check': (callback) => {
+  'test-responsive-check': [['jsstandard'], (callback) => {
     sequence(
       'test-responsive-check-exec',
       'livereload',
       callback
     )
-  },
+  }],
   /**
    * ### test-responsive-check-exec
    *
