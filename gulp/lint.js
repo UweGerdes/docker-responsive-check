@@ -5,7 +5,7 @@
 
 const gulp = require('gulp'),
   changedInPlace = require('gulp-changed-in-place'),
-  eslint = require('gulp-eslint'),
+  //eslint = require('gulp-eslint'),
   jscs = require('gulp-jscs'),
   jscsStylish = require('gulp-jscs-stylish'),
   gulpJshint = require('gulp-jshint'),
@@ -14,6 +14,7 @@ const gulp = require('gulp'),
   notify = require('gulp-notify'),
   pugLinter = require('gulp-pug-linter'),
   sequence = require('gulp-sequence'),
+  standard = require('gulp-standard'),
   yamlValidate = require('gulp-yaml-validate'),
   jshint = require('jshint').JSHINT,
   config = require('../lib/config'),
@@ -58,6 +59,7 @@ const tasks = {
    * @task eslint
    * @namespace tasks
    */
+  /*
   'eslint': () => gulp.src(config.gulp.watch.eslint)
       //.pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp eslint' }))
       .pipe(eslint({
@@ -75,6 +77,23 @@ const tasks = {
       }))
       .pipe(eslint.format())
       .pipe(eslint.failAfterError()),
+  */
+  /**
+   * #### Lint js files
+   *
+   * apply jsstandard to js files
+   *
+   * @task jshint
+   * @namespace tasks
+   */
+  'jsstandard': () => gulp.src(config.gulp.watch.jsstandard)
+      .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
+      .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
+      .pipe(standard())
+      .pipe(standard.reporter('default', {
+        breakOnError: true,
+        quiet: true
+      })),
   /**
    * #### Lint js files
    *

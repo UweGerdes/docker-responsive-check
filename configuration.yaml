@@ -4,8 +4,6 @@
 
 gulp:
   watch:
-    eslint:
-      - 'index.js'
     jsdoc:
       - '*.js'
       - 'gulp/**/*.js'
@@ -21,6 +19,8 @@ gulp:
       - '.jscsrc'
       - '.jshintrc'
       - '.lesshintrc'
+    jsstandard:
+      - 'index.js'
     lesshint:
       - 'src/less/**/*.less'
     yamllint:
@@ -39,7 +39,7 @@ gulp:
       - 'htdocs/js/**/*.js'
       - 'index.js'
     test-responsive-check:
-      - 'config/modules/**/tests/responsive-check/*'
+      - 'config/modules/**/tests/responsive-check/*.js'
     server-restart:
       - 'server.js'
     livereload:
