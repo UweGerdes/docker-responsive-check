@@ -10,8 +10,6 @@ gulp:
       - 'lib/**/*.js'
       - 'js/**/*.js'
     jshint:
-      - 'server.js'
-      - 'lib/**/*.js'
       - 'js/**/*.js'
     jsonlint:
       - '**/*.json'
@@ -19,9 +17,9 @@ gulp:
       - '.jshintrc'
       - '.lesshintrc'
     jsstandard:
-      - 'gulpfile.js'
+      - '*.js'
       - 'gulp/**/*.js'
-      - 'index.js'
+      - 'lib/**/*.js'
     lesshint:
       - 'src/less/**/*.less'
     yamllint:
@@ -39,6 +37,7 @@ gulp:
       - 'htdocs/css/app.css'
       - 'htdocs/js/**/*.js'
       - 'index.js'
+      - 'lib/load-page.js'
     test-responsive-check:
       - 'config/modules/**/tests/responsive-check/*.js'
     server-restart:

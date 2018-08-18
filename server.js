@@ -3,52 +3,50 @@
  *
  * (c) Uwe Gerdes, entwicklung@uwegerdes.de
  */
-'use strict';
+'use strict'
 
-const bodyParser = require('body-parser'),
-  exec = require('child_process').exec,
-  express = require('express'),
-  fs = require('fs'),
-  glob = require('glob'),
-  makeDir = require('make-dir'),
-  logger = require('morgan'),
-  os = require('os'),
-  path = require('path'),
-  config = require('./lib/config');
+const bodyParser = require('body-parser')
+const exec = require('child_process').exec
+const express = require('express')
+const fs = require('fs')
+const glob = require('glob')
+const makeDir = require('make-dir')
+const logger = require('morgan')
+const path = require('path')
+const config = require('./lib/config')
+const ipv4addresses = require('./lib/ipv4addresses')
 
-const app = express();
+const app = express()
 
-const httpPort = process.env.RESPONSIVE_CHECK_HTTP || 8080,
-  gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081;
+const httpPort = process.env.RESPONSIVE_CHECK_HTTP || 8080
+const gulpLivereloadPort = process.env.GULP_LIVERELOAD_PORT || 8081
 
-const verbose = config.server.verbose;
+const verbose = config.server.verbose
 
-const baseDir = '/results',
-  configDir = path.join(__dirname, 'config'),
-  resultsDir = path.join(__dirname, 'results');
+const baseDir = '/results'
+const configDir = path.join(__dirname, 'config')
+const resultsDir = path.join(__dirname, 'results')
 
-const running = [];
+const running = []
 
-const configs = getConfigs();
-const configs2 = getConfigs2();
-
-const addresses = ipv4adresses();
+const configs = getConfigs()
+const configs2 = getConfigs2()
 
 if (!fs.existsSync(resultsDir)) {
-  fs.mkdirSync(resultsDir);
+  fs.mkdirSync(resultsDir)
 }
 
 // Log the requests
 if (verbose) {
-  app.use(logger('dev'));
+  app.use(logger('dev'))
 }
 
 // work on post requests
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'htdocs')));
+app.use(express.static(path.join(__dirname, 'htdocs')))
 
 /**
  * Route for results
@@ -57,13 +55,13 @@ app.use(express.static(path.join(__dirname, 'htdocs')));
  * @param {Object} res - response
  */
 app.get(/^(\/results\/.+)$/, (req, res) => {
-  res.sendFile(path.join(__dirname, req.params[0]));
-});
+  res.sendFile(path.join(__dirname, req.params[0]))
+})
 
 // Handle requests for result view
 app.get(/^\/(config\/.+)$/, (req, res) => {
-  const configFilename = req.params[0].replace(/config\//, '');
-  const config = requireFile(req.params[0] + '.js');
+  const configFilename = req.params[0].replace(/config\//, '')
+  const config = requireFile(req.params[0] + '.js')
   try {
     res.render('resultView.ejs', {
       configs: configs,
@@ -73,125 +71,103 @@ app.get(/^\/(config\/.+)$/, (req, res) => {
       httpPort: httpPort,
       gulpLivereloadPort: gulpLivereloadPort,
       baseDir: baseDir
-    });
+    })
   } catch (e) {
-    if (false) {
-      console.log(e);
-    }
-    config.error = 'config file not found: ' + configFilename;
+    console.log(e)
+    config.error = 'config file not found: ' + configFilename
     res.status(404)
-      .send('config file not found: ' + configFilename);
+      .send('config file not found: ' + configFilename)
   }
-});
+})
 
 // Handle AJAX requests for run configs
 app.get(/^\/start\/(.+)$/, function (req, res) {
-  runConfig(req.params[0], res);
-});
+  runConfig(req.params[0], res)
+})
 
 // Route for root dir
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+  res.sendFile(path.join(__dirname, 'index.html'))
+})
 
 // Route for everything else.
 app.get('*', function (req, res) {
-  res.status(404).send('Sorry cant find that: ' + req.url);
-});
+  res.status(404).send('Sorry cant find that: ' + req.url)
+})
 
 // Fire it up!
-app.listen(httpPort);
+app.listen(httpPort)
 
-// Get IP for console message
-function ipv4adresses() {
-  const addresses = [];
-  const interfaces = os.networkInterfaces();
-  for (let k in interfaces) {
-    if (interfaces.hasOwnProperty(k)) {
-      for (let k2 in interfaces[k]) {
-        if (interfaces[k].hasOwnProperty(k2)) {
-          const address = interfaces[k][k2];
-          if (address.family === 'IPv4' && !address.internal) {
-            addresses.push(address.address);
-          }
-        }
-      }
-    }
-  }
-  return addresses;
-}
-
-// console.log("IP addresses of container:  ", addresses);
-console.log('responsive-check server listening on http://' + addresses[0] + ':' + httpPort);
+console.log('responsive-check server listening on http://' + ipv4addresses.get()[0] + ':' + httpPort)
 
 // get configurations
-function getConfigs() {
-  const configs = [];
+function getConfigs () {
+  const configs = []
   fs.readdirSync(configDir).forEach(function (fileName) {
     if (fileName.indexOf('.js') > 0) {
-      const configName = fileName.replace(/\.js/, '');
-      configs.push(configName);
+      const configName = fileName.replace(/\.js/, '')
+      configs.push(configName)
     }
-  });
-  return configs;
+  })
+  return configs
 }
 
 /**
  * get configuration files and labels
  */
-function getConfigs2() {
-  let configs = {};
+function getConfigs2 () {
+  let configs = {}
   config.gulp['test-responsive-check'].forEach(
     (path) => {
-      const paths = glob.sync(path);
+      const paths = glob.sync(path)
       if (paths.length > 0) { // TODO use more than one label
-        const label = paths[0].replace(/.+modules\/([^/]+).+/, '$1');
-        configs[label] = paths.map((path) => path.replace(/.+\/([^/]+)\.js/, '$1'));
+        const label = paths[0].replace(/.+modules\/([^/]+).+/, '$1')
+        configs[label] = paths.map((path) => path.replace(/.+\/([^/]+)\.js/, '$1'))
       }
     }
-  );
-  return configs;
+  )
+  return configs
 }
 
 // start compare-layouts with config file
-function runConfig(config, res) {
-  const destDir = path.join(__dirname, 'results', config);
-  const logfilePath = path.join(destDir, 'result.log');
+function runConfig (config, res) {
+  const destDir = path.join(__dirname, 'results', config)
+  const logfilePath = path.join(destDir, 'result.log')
   const log = function (msg) {
-    console.log(msg);
-    fs.appendFileSync(logfilePath, msg + '\n');
-    res.write(replaceAnsiColors(msg).replace(/\n/, '<br />\n') + '<br />\n');
-  };
+    console.log(msg)
+    fs.appendFileSync(logfilePath, msg + '\n')
+    res.write(replaceAnsiColors(msg).replace(/\n/, '<br />\n') + '<br />\n')
+  }
   if (!fs.existsSync(destDir)) {
-    makeDir(destDir);
+    makeDir(destDir)
   }
   res.write('<!DOCTYPE html>\n<html>\n<head>\n<meta charset="utf-8" />\n<title>' + config +
     '</title>\n<link href="/css/app.css" rel="stylesheet" />\n</head>\n<body>\n<div ' +
-    'class="runView">\n');
+    'class="runView">\n')
 
-  running.push(config);
+  running.push(config)
   if (fs.existsSync(logfilePath)) {
-    fs.unlinkSync(logfilePath);
+    fs.unlinkSync(logfilePath)
   }
-  const loader = exec('node index.js ' + config + '.js');
-  loader.stdout.on('data', function (data) { log(data.toString().trim()); });
-  loader.stderr.on('data', function (data) { log(data.toString().trim()); });
-  loader.on('error', function (err) { log(' error: ' + err.toString().trim()); });
+  const loader = exec('node index.js ' + config + '.js')
+  loader.stdout.on('data', function (data) { log(data.toString().trim()) })
+  loader.stderr.on('data', function (data) { log(data.toString().trim()) })
+  loader.on('error', function (err) { log(' error: ' + err.toString().trim()) })
   loader.on('close', function (code) {
     if (code > 0) {
-      log('load ' + config + ' error, exit-code: ' + code);
+      log('load ' + config + ' error, exit-code: ' + code)
     }
-    log('server finished ' + config);
-    running.splice(running.indexOf(config), 1);
-    res.write('</div>\n</body>\n</html>\n');
+    log('server finished ' + config)
+    running.splice(running.indexOf(config), 1)
+    res.write('</div>\n</body>\n</html>\n')
     if (running.length === 0) {
-      res.end();
+      res.end()
     }
-  });
+  })
 }
 
-function replaceAnsiColors(string) {
-  let result = '';
+function replaceAnsiColors (string) {
+  let result = ''
   const replaceTable = {
     '0': 'none',
     '1': 'font-weight: bold',
@@ -215,28 +191,28 @@ function replaceAnsiColors(string) {
     '45': 'background-color: magenta',
     '46': 'background-color: cyan',
     '47': 'background-color: white'
-  };
-  string.toString().split(/(\x1B\[[0-9;]+m)/).forEach(function (part) {
-    if (part.match(/(\x1B\[[0-9;]+m)/)) {
-      part = part.replace(/\x1B\[([0-9;]+)m/, '$1');
-      if (part == '0') {
-        result += '</span>';
+  }
+  string.toString().split(/(\x1B\[[0-9;]+m)/).forEach(function (part) { // eslint-disable-line
+    if (part.match(/(\x1B\[[0-9;]+m)/)) { // eslint-disable-line
+      part = part.replace(/\x1B\[([0-9;]+)m/, '$1') // eslint-disable-line
+      if (part === '0') {
+        result += '</span>'
       } else {
-        result += '<span style="';
+        result += '<span style="'
         part.split(/(;)/).forEach(function (x) {
           if (replaceTable[x]) {
-            result += replaceTable[x];
+            result += replaceTable[x]
           } else {
-            result += x;
+            result += x
           }
-        });
-        result += '">';
+        })
+        result += '">'
       }
     } else {
-      result += part;
+      result += part
     }
-  });
-  return result;
+  })
+  return result
 }
 
 /**
@@ -245,11 +221,11 @@ function replaceAnsiColors(string) {
  * @private
  * @param {String} filename - config filename
  */
-function requireFile(filename) {
-  delete require.cache[require.resolve('./' + filename)];
+function requireFile (filename) {
+  delete require.cache[require.resolve('./' + filename)]
   if (fs.existsSync('./' + filename)) {
-    return require('./' + filename);
+    return require('./' + filename)
   } else {
-    console.log('server require ./' + filename + ' not found');
+    console.log('server require ./' + filename + ' not found')
   }
 }

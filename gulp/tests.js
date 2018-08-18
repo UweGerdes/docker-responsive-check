@@ -46,7 +46,7 @@ const tasks = {
    * @namespace tasks
    * @param {function} callback - gulp callback
    */
-  'test-responsive-check-default': [['jshint'], (callback) => {
+  'test-responsive-check-default': [['jsstandard'], (callback) => {
     sequence(
       'test-responsive-check-default-exec',
       'livereload',
