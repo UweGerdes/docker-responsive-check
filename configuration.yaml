@@ -22,14 +22,14 @@ gulp:
       - '.jshintrc'
       - '.lesshintrc'
     lesshint:
-      - 'less/**/*.less'
+      - 'src/less/**/*.less'
     yamllint:
       - '**/*.yaml'
       - '**/*.yml'
     ejslint:
       - 'views/**/*.ejs'
     less:
-      - 'less/**/*.less'
+      - 'src/less/**/*.less'
     puglint:
       - '**/*.pug'
     test-responsive-check-default:
@@ -62,7 +62,7 @@ gulp:
       replace:
         '/js': ''
     less:
-      src: 'less/app.less'
+      src: 'src/less/app.less'
       dest: 'htdocs/css'
 
 server:
