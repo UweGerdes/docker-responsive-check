@@ -143,10 +143,11 @@ function getConfigs2() {
   let configs = {};
   config.gulp['test-responsive-check'].forEach(
     (path) => {
-      console.log(path);
       const paths = glob.sync(path);
-      const label = paths[0].replace(/.+modules\/([^/]+).+/, '$1');
-      configs[label] = paths.map((path) => path.replace(/.+\/([^/]+)\.js/, '$1'));
+      if (paths.length > 0) { // TODO use more than one label
+        const label = paths[0].replace(/.+modules\/([^/]+).+/, '$1');
+        configs[label] = paths.map((path) => path.replace(/.+\/([^/]+)\.js/, '$1'));
+      }
     }
   );
   return configs;
