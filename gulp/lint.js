@@ -1,27 +1,26 @@
 /**
  * @module gulp/lint
  */
-'use strict';
+'use strict'
 
-const gulp = require('gulp'),
-  cache = require('gulp-cached'),
-  changedInPlace = require('gulp-changed-in-place'),
-  //eslint = require('gulp-eslint'),
-  jscs = require('gulp-jscs'),
-  jscsStylish = require('gulp-jscs-stylish'),
-  gulpJshint = require('gulp-jshint'),
-  jsonlint = require('gulp-jsonlint'),
-  lesshint = require('gulp-lesshint'),
-  notify = require('gulp-notify'),
-  pugLinter = require('gulp-pug-linter'),
-  sequence = require('gulp-sequence'),
-  standard = require('gulp-standard'),
-  yamlValidate = require('gulp-yaml-validate'),
-  jshint = require('jshint').JSHINT,
-  config = require('../lib/config'),
-  filePromises = require('./lib/files-promises'),
-  loadTasks = require('./lib/load-tasks')
-  ;
+const gulp = require('gulp')
+const cache = require('gulp-cached')
+const changedInPlace = require('gulp-changed-in-place')
+// const eslint = require('gulp-eslint')
+const jscs = require('gulp-jscs')
+const jscsStylish = require('gulp-jscs-stylish')
+const gulpJshint = require('gulp-jshint')
+const jsonlint = require('gulp-jsonlint')
+const lesshint = require('gulp-lesshint')
+const notify = require('gulp-notify')
+const pugLinter = require('gulp-pug-linter')
+const sequence = require('gulp-sequence')
+const standard = require('gulp-standard')
+const yamlValidate = require('gulp-yaml-validate')
+const jshint = require('jshint').JSHINT
+const config = require('../lib/config')
+const filePromises = require('./lib/files-promises')
+const loadTasks = require('./lib/load-tasks')
 
 /**
  * log only to console, not GUI
@@ -30,8 +29,8 @@ const gulp = require('gulp'),
  * @param {function} callback - gulp callback
  */
 const log = notify.withReporter((options, callback) => {
-  callback();
-});
+  callback()
+})
 
 const tasks = {
   /**
@@ -45,12 +44,13 @@ const tasks = {
     sequence(
       'jshint',
       'jsonlint',
+      'jsstandard',
       'lesshint',
       'yamllint',
       'puglint',
       'ejslint',
       callback
-    );
+    )
   },
   /**
    * #### Lint js files
@@ -88,13 +88,13 @@ const tasks = {
    * @namespace tasks
    */
   'jsstandard': () => gulp.src(config.gulp.watch.jsstandard)
-      .pipe(cache('jsstandard'))
-      .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
-      .pipe(standard())
-      .pipe(standard.reporter('default', {
-        breakOnError: true,
-        quiet: true
-      })),
+    .pipe(cache('jsstandard'))
+    .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jsstandard' }))
+    .pipe(standard())
+    .pipe(standard.reporter('default', {
+      breakOnError: false,
+      quiet: true
+    })),
   /**
    * #### Lint js files
    *
@@ -104,14 +104,14 @@ const tasks = {
    * @namespace tasks
    */
   'jshint': () => gulp.src(config.gulp.watch.jshint)
-      .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
-      .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jshint' }))
-      .pipe(gulpJshint())
-      .pipe(jscs())
-      .pipe(jscsStylish.combineWithHintResults())
-      .pipe(gulpJshint.reporter('default'))
-      //.pipe(gulpJshint.reporter('jshint-stylish'))
-      .pipe(gulpJshint.reporter('fail')),
+    .pipe(changedInPlace({ howToDetermineDifference: 'modification-time' }))
+    .pipe(log({ message: 'linting: <%= file.path %>', title: 'Gulp jshint' }))
+    .pipe(gulpJshint())
+    .pipe(jscs())
+    .pipe(jscsStylish.combineWithHintResults())
+    .pipe(gulpJshint.reporter('default'))
+    // .pipe(gulpJshint.reporter('jshint-stylish'))
+    .pipe(gulpJshint.reporter('fail')),
   /**
    * #### Lint json files
    *
@@ -121,8 +121,8 @@ const tasks = {
    * @namespace tasks
    */
   'jsonlint': () => gulp.src(config.gulp.watch.jsonlint)
-      .pipe(jsonlint())
-      .pipe(jsonlint.reporter()),
+    .pipe(jsonlint())
+    .pipe(jsonlint.reporter()),
   /**
    * #### Lint less files
    *
@@ -132,16 +132,15 @@ const tasks = {
    * @namespace tasks
    */
   'lesshint': () => gulp.src(config.gulp.watch.lesshint)
-      .pipe(lesshint())
-      //.on('error', function () {})
-      .on('error', log.onError({
-        message: 'Error: <%= error.message %>',
-        title: 'LESS-Lint Error' }))
-      .on('warning', log.onError({
-        message: 'Warning: <%= error.message %>',
-        title: 'LESS-Lint Warning' }))
-      .pipe(lesshint.reporter())
-      .pipe(lesshint.failOnError()),
+    .pipe(lesshint())
+    .on('error', log.onError({
+      message: 'Error: <%= error.message %>',
+      title: 'LESS-Lint Error' }))
+    .on('warning', log.onError({
+      message: 'Warning: <%= error.message %>',
+      title: 'LESS-Lint Warning' }))
+    .pipe(lesshint.reporter())
+    .pipe(lesshint.failOnError()),
   /**
    * #### Lint yaml files
    *
@@ -151,10 +150,10 @@ const tasks = {
    * @namespace tasks
    */
   'yamllint': () => gulp.src(config.gulp.watch.yamllint)
-      .pipe(yamlValidate({ space: 2 }))
-      .on('error', (msg) => { // jscs:ignore jsDoc
-        console.log(msg);
-      }),
+    .pipe(yamlValidate({ space: 2 }))
+    .on('error', (msg) => {
+      console.log(msg)
+    }),
   /**
    * #### Lint pug files
    *
@@ -164,8 +163,8 @@ const tasks = {
    * @namespace tasks
    */
   'puglint': () => gulp.src(config.gulp.watch.puglint)
-      .pipe(pugLinter())
-      .pipe(pugLinter.reporter('fail')),
+    .pipe(pugLinter())
+    .pipe(pugLinter.reporter('fail')),
   /**
    * #### Lint ejs files
    *
@@ -182,38 +181,37 @@ const tasks = {
    */
   'ejslint': (callback) => {
     Promise.all(config.gulp.watch.ejslint.map(filePromises.getFilenames))
-    .then((filenames) => [].concat(...filenames)) // jscs:ignore jsDoc
-    .then((filenames) => // jscs:ignore jsDoc
-      Promise.all(
-        filenames.map(filePromises.getFileContent)
+      .then((filenames) => [].concat(...filenames))
+      .then((filenames) =>
+        Promise.all(
+          filenames.map(filePromises.getFileContent)
+        )
       )
-    )
-    .then((files) => // jscs:ignore jsDoc
-      Promise.all(
-        files.map(replaceOutputTags)
+      .then((files) =>
+        Promise.all(
+          files.map(replaceOutputTags)
+        )
       )
-    )
-    .then((files) => // jscs:ignore jsDoc
-      Promise.all(
-        files.map(replaceEjsTags)
+      .then((files) =>
+        Promise.all(
+          files.map(replaceEjsTags)
+        )
       )
-    )
-    .then((files) => // jscs:ignore jsDoc
-      Promise.all(
-        files.map(fileJsHint)
+      .then((files) =>
+        Promise.all(
+          files.map(fileJsHint)
+        )
       )
-    )
-    .then((files) => // jscs:ignore jsDoc
-      Promise.all(
-        files.map(report)
+      .then((files) =>
+        Promise.all(
+          files.map(report)
+        )
       )
-    )
-    .then(() => { // jscs:ignore jsDoc
-      callback();
-    })
-    ;
+      .then(() => {
+        callback()
+      })
   }
-};
+}
 
 // some Promises for ejslint
 
@@ -224,12 +222,12 @@ const tasks = {
  * @param {function} file - file object with contents
  */
 const replaceOutputTags = (file) =>
-  new Promise((resolve) => { // jscs:ignore jsDoc
+  new Promise((resolve) => {
     file.noOutput = '<% var output, output_raw; %>' + file.content
       .replace(/<%= *(.+?) *%>/g, '<% output = $1; %>')
-      .replace(/<%- *(.+?) *%>/g, '<% output_raw = $1; %>');
-    resolve(file);
-  });
+      .replace(/<%- *(.+?) *%>/g, '<% output_raw = $1; %>')
+    resolve(file)
+  })
 
 /**
  * Replace html outside of ejs tags with returns
@@ -238,17 +236,17 @@ const replaceOutputTags = (file) =>
  * @param {function} file - file object with contents
  */
 const replaceEjsTags = (file) =>
-  new Promise((resolve) => { // jscs:ignore jsDoc
-    let parts = file.noOutput.split(/<%/);
-    let output = [];
-    parts.forEach((part) => { // jscs:ignore jsDoc
-      let snips = part.split(/%>/);
-      output.push(snips[0]);
-      output.push(snips.join('%>').replace(/[^\n]/g, ''));
-    });
-    file.jsCode = output.join('');
-    resolve(file);
-  });
+  new Promise((resolve) => {
+    let parts = file.noOutput.split(/<%/)
+    let output = []
+    parts.forEach((part) => {
+      let snips = part.split(/%>/)
+      output.push(snips[0])
+      output.push(snips.join('%>').replace(/[^\n]/g, ''))
+    })
+    file.jsCode = output.join('')
+    resolve(file)
+  })
 
 /**
  * jshint the remaining content
@@ -257,14 +255,14 @@ const replaceEjsTags = (file) =>
  * @param {function} file - file object with contents
  */
 const fileJsHint = (file) =>
-  new Promise((resolve) => { // jscs:ignore jsDoc
-    jshint(file.jsCode, { esversion: 6, asi: true }, { });
+  new Promise((resolve) => {
+    jshint(file.jsCode, { esversion: 6, asi: true }, { })
     if (jshint.errors) {
-      file.errors = jshint.errors;
+      file.errors = jshint.errors
     }
-    file.jshint = jshint.data();
-    resolve(file);
-  });
+    file.jshint = jshint.data()
+    resolve(file)
+  })
 
 /**
  * report errors
@@ -273,18 +271,18 @@ const fileJsHint = (file) =>
  * @param {function} file - file object with contents
  */
 const report = (file) =>
-  new Promise((resolve) => { // jscs:ignore jsDoc
+  new Promise((resolve) => {
     if (file.jshint.errors) {
-      console.log('ERRORS in ' + file.filename);
-      file.jshint.errors.forEach((error) => { // jscs:ignore jsDoc
-        console.log('ERROR: ' + error.line + '/' + error.character + ' ' + error.reason);
-      });
+      console.log('ERRORS in ' + file.filename)
+      file.jshint.errors.forEach((error) => {
+        console.log('ERROR: ' + error.line + '/' + error.character + ' ' + error.reason)
+      })
     }
-    resolve(file);
-  });
+    resolve(file)
+  })
 
-if (process.env.NODE_ENV == 'development') {
-  loadTasks.importTasks(tasks);
+if (process.env.NODE_ENV === 'development') {
+  loadTasks.importTasks(tasks)
 } else {
-  loadTasks.importTasks({ jshint: () => { } }); // jscs:ignore jsDoc
+  loadTasks.importTasks({ jshint: () => { } })
 }

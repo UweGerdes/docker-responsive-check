@@ -2,14 +2,13 @@
  * @module lib:files-promises
  * @private
  */
-'use strict';
+'use strict'
 
-const fs = require('fs'),
-  glob = require('glob')
-  ;
+const fs = require('fs')
+const glob = require('glob')
 
 // execute only one test file if one has changed in recentTime, otherwise all
-const recentTime = 60; // * 60;
+const recentTime = 60 // * 60
 
 /**
  * get list of files for glob pattern
@@ -18,40 +17,40 @@ const recentTime = 60; // * 60;
  * @param {function} path - patterns for paths
  */
 const getFilenames = (path) =>
-  new Promise((resolve, reject) => { // jscs:ignore jsDoc
-    glob(path, (error, files) => { // jscs:ignore jsDoc
+  new Promise((resolve, reject) => {
+    glob(path, (error, files) => {
       if (error) {
-        reject(error);
+        reject(error)
       } else {
-        resolve(files);
+        resolve(files)
       }
-    });
-  });
+    })
+  })
 
 /**
  * get newest file from glob list - synchronous
  *
  * @param {array} files - list with glob paths
  */
-function getRecentFiles(files) {
-  let newest = null;
-  let bestTime = 0;
+const getRecentFiles = (files) => {
+  let newest = null
+  let bestTime = 0
   for (let i = 0; i < files.length; i++) {
-    const fileTime = fs.statSync(files[i]).mtime.getTime();
+    const fileTime = fs.statSync(files[i]).mtime.getTime()
     if (fileTime > bestTime) {
-      newest = files[i];
-      bestTime = fileTime;
+      newest = files[i]
+      bestTime = fileTime
     }
   }
-  const now = new Date();
+  const now = new Date()
   if (now.getTime() - bestTime < recentTime * 1000) {
-    return new Promise((resolve) => { // jscs:ignore jsDoc
-      resolve([newest]);
-    });
+    return new Promise((resolve) => {
+      resolve([newest])
+    })
   } else {
-    return new Promise((resolve) => { // jscs:ignore jsDoc
-      resolve(files);
-    });
+    return new Promise((resolve) => {
+      resolve(files)
+    })
   }
 }
 
@@ -62,18 +61,18 @@ function getRecentFiles(files) {
  * @param {function} filename - to open
  */
 const getFileContent = (filename) =>
-  new Promise((resolve, reject) => { // jscs:ignore jsDoc
-    fs.readFile(filename, (error, data) => { // jscs:ignore jsDoc
+  new Promise((resolve, reject) => {
+    fs.readFile(filename, (error, data) => {
       if (error) {
-        reject(error);
+        reject(error)
       } else {
-        resolve({ filename: filename, content: data.toString() });
+        resolve({ filename: filename, content: data.toString() })
       }
-    });
-  });
+    })
+  })
 
 module.exports = {
   getFilenames: getFilenames,
   getRecentFiles: getRecentFiles,
   getFileContent: getFileContent
-};
+}

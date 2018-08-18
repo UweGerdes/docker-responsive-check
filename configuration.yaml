@@ -10,8 +10,7 @@ gulp:
       - 'lib/**/*.js'
       - 'js/**/*.js'
     jshint:
-      - 'gulpfile.js'
-      - 'gulp/**/*.js'
+      - 'server.js'
       - 'lib/**/*.js'
       - 'js/**/*.js'
     jsonlint:
@@ -20,6 +19,8 @@ gulp:
       - '.jshintrc'
       - '.lesshintrc'
     jsstandard:
+      - 'gulpfile.js'
+      - 'gulp/**/*.js'
       - 'index.js'
     lesshint:
       - 'src/less/**/*.less'

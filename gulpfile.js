@@ -9,17 +9,16 @@
  * @module
  *
  */
-'use strict';
+'use strict'
 
-require('./gulp/build');
-require('./gulp/lint');
-require('./gulp/server');
-require('./gulp/tests');
-require('./gulp/watch');
+require('./gulp/build')
+require('./gulp/lint')
+require('./gulp/server')
+require('./gulp/tests')
+require('./gulp/watch')
 
-const gulp = require('gulp'),
-  sequence = require('gulp-sequence')
-  ;
+const gulp = require('gulp')
+const sequence = require('gulp-sequence')
 
 /**
  * #### default task
@@ -29,7 +28,7 @@ const gulp = require('gulp'),
  * @param {function} callback - gulp callback
  */
 gulp.task('default', (callback) => {
-  if (process.env.NODE_ENV == 'development') {
+  if (process.env.NODE_ENV === 'development') {
     sequence(
       'lint',
       'build',
@@ -37,8 +36,8 @@ gulp.task('default', (callback) => {
       'livereload-start',
       'server-start',
       'tests',
-      callback);
-  } else if (process.env.NODE_ENV == 'backup') {
+      callback)
+  } else if (process.env.NODE_ENV === 'backup') {
     sequence(
       'lint',
       'build',
@@ -46,12 +45,12 @@ gulp.task('default', (callback) => {
       'livereload-start',
       'server-start',
       'tests',
-      callback);
+      callback)
   } else {
     sequence(
       'watch',
       'livereload-start',
       'server-start',
-      callback);
+      callback)
   }
-});
+})
