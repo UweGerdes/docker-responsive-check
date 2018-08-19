@@ -62,6 +62,6 @@
     "start": "gulp",
     "dev": "nodemon --watch gulpfile.js --watch configuration.yaml --watch 'gulp/*.js' --delay 1 --exec gulp",
     "dev-quiet": "nodemon --watch gulpfile.js --watch 'gulp/*.js' --quiet --exitcrash --delay 1 --exec gulp",
-    "test": "gulp responsive-check-selftest"
+    "test": "gulp test-responsive-check-default"
   }
 }
